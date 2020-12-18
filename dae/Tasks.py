@@ -13,20 +13,31 @@ import magic
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
 # Get this month's events from the shared sheet
-def get_current_events():
+def get_current_events(debug=True):
 	# Clean the root directory (Prevents errors is crashed/interrupted during last run)
 	root_dir = os.fspath(pathlib.Path().parent.absolute())
 	root_files = os.listdir(root_dir)
+
+	if debug:
+		print(f"""
+				root_dir: {root_dir}
+				root_files: {root_files}
+			""")
+
 	for file in root_files:
-		if file not in ["dae", "run.py"]:
+		if file not in ["dae", "run.py", "README.md", ".gitignore", ".gitattributes", ".git"]:
+			print(f"{file} WAS DELETED DURING AN AUTOMATED CLEANUP SEQUENCE")
 			os.remove(file)
+		else:
+			if debug:
+				print(f"{file} SUCCESSFULLY FOUND")
 
 	# Download current events and stream it directly into the return to be parsed
 	return requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content
 
 
 # Generate Event Document Templates for Each Event
-def generate_templates(debug=False):
+def generate_templates(debug=True):
 	# For each year in cache
 	cache_dir = (os.fspath(pathlib.Path().parent.absolute()) + f"\\dae\\Archive\\Cache\\")
 	year_folders = os.listdir(cache_dir)
@@ -159,7 +170,7 @@ def generate_templates(debug=False):
 ###########################################################################################################################################
 # Task Practice
 @tasks.loop(seconds=120)
-async def validate_archive():
+async def validate_archive(debug=True):
 	# Initialize Variables
 	standard_events = []
 
@@ -169,12 +180,31 @@ async def validate_archive():
 	# Parse current events for every individual event
 	for event in current_events:
 		event = event.decode("UTF-8").replace("\"", "").split("'")
+
+		##### DEBUG
+		if debug:
+			print(f"""
+					{event} WAS INITIALIZED
+				""")
 		
 		# Clean the event
 		for i in event:
 			if i in [",", " ", ""]:
 				event.remove(i)
 
+				##### DEBUG
+				if debug:
+					print(f"""
+							{event} WAS CLEANED: {i} WAS REMOVED
+						""")
+
+		##### DEBUG
+		if debug:
+			print(f"""
+					{event} WAS CLEANED SUCCESSFULLY
+				""")
+
+		# If the event is formatted correctly
 		if len(event) == 4:
 			## Variable Initialization
 			# Standard Data
@@ -195,14 +225,53 @@ async def validate_archive():
 			evidence = non_standard_data[2]
 			summary = non_standard_data[3]
 
+			##### DEBUG
+			if debug:
+				print(f"""
+						{event} WAS INTERNALIZED
+
+							-- META --
+								Archived on: {archived_on}
+								Archived by: {archived_by}
+							
+							-- STANDARD --
+								Date: {date}
+								Title: {title}
+
+							-- NON-STANDARD --
+								Tags: {tags}
+								Evidence: {evidence}
+								Summary: {summary}
+					""")
+
 			standard_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
+
+
+	##### DEBUG
+	if debug:
+		print(f"""
+				-- STANDARD EVENTS --
+					{standard_events}
+			""")
 
 
 	# Duplicate Preventing Database Uploader
 	for event in standard_events:
-		if not len(session.query(Event).filter_by(date=date).all())>0:
-			if not len(session.query(Event).filter_by(title=title).all())>0:
-				add_to_db(event)
+		if not len(session.query(Event).filter_by(date=event.date, title=event.title).all())>0:
+			add_to_db(event)
+
+			##### DEBUG
+			if debug:
+				print(f"""
+						'{event.title}' WAS ADDED TO THE INTERNAL DATABASE
+					""")
+		else:
+			##### DEBUG
+			if debug:
+				print(f"""
+						'{event.title}' ALREADY EXISTS IN THE INTERNAL DATABASE
+					""")
+
 		
 	
 	# Gets root files and stores them in a nested dictionary which contains that files title and id

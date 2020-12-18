@@ -20,9 +20,9 @@ import requests
 # Database Model
 from dae.Archive.Model import Event
 
-# For MIME types
+# Pymagic MIME Analysis
 import magic
-mime = magic.Magic(mime=True)
+
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
@@ -34,8 +34,10 @@ dae = commands.Bot(command_prefix="!")
 gauth = GoogleAuth()
 scope = ['https://www.googleapis.com/auth/drive']
 gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/private_key.json", scope)
-#credentials, project = google.auth.default()
 drive = GoogleDrive(gauth)
+
+# Pymagic Instantiation
+mime = magic.Magic(mime=True)
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
@@ -45,24 +47,34 @@ def query_drive(query=None):
 	if query:
 		return drive.ListFile(dict(q = query)).GetList()
 
-# List all untrashed drive files
-def list_untrashed_drive_folders():
-	return query_drive("trashed = false and mimeType != 'application/vnd.google-apps.folder'")
-
 
 # Initialize Drive
 def startup_drive():
-	all_files = list_untrashed_drive_folders()
-
 	return {
-		"All Files" : all_files,
-		"Current Events" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Current Events'")),
-		"Data Entry Form" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Data Entry Form'")),
-		"Evidence" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Evidence'"))
+		"All Files" : query_drive("trashed = false and mimeType != 'application/vnd.google-apps.folder'"), 					# File List
+		"Current Events" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Current Events'")), 	# Folder File
+		"Data Entry Form" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Data Entry Form'")),	# File File
+		"Evidence" : initialize_file_from_drive_file_list(file_list=query_drive(query="title = 'Evidence'"))				# Folder File
 		}
 
 
+# Initialize file from file list
 def initialize_file_from_drive_file_list(file_list=None):
+
+	# Get file title
+	def get_title_from_drive_file_list(file_list=None):
+		for file in file_list:
+			if file["title"]:
+				return file["title"]
+
+	# Get file id
+	def get_id_from_drive_file_list(file_list=None):
+		for file in file_list:
+			if file["id"]:
+				return file["id"]
+
+
+	# Initialize File
 	if file_list:
 		return dict(
 			title = get_title_from_drive_file_list(file_list=file_list),
@@ -70,16 +82,6 @@ def initialize_file_from_drive_file_list(file_list=None):
 			)
 
 
-def get_title_from_drive_file_list(file_list=None):
-	for file in file_list:
-		if file["title"]:
-			return file["title"]
-
-
-def get_id_from_drive_file_list(file_list=None):
-	for file in file_list:
-		if file["id"]:
-			return file["id"]
 
 # Get files in folder via id
 def get_child_files_from_drive_id(parent_id=None):
@@ -93,8 +95,9 @@ def get_child_files_from_drive_id(parent_id=None):
 				))
 		return files
 
+
 # Download files given a dictionary with title and id pairings for files
-def download_drive_files(file_list=None, debug=False):
+def download_drive_files(file_list=None, debug=True):
 	for file in file_list:
 
 		# Identify files
@@ -183,7 +186,7 @@ def download_drive_files(file_list=None, debug=False):
 	
 						Current path: {current_path}
 						Cache path: {cache_path}
-					Date path: {date_path}
+						Date path: {date_path}
 				""")
 
 
@@ -205,8 +208,8 @@ def download_drive_files(file_list=None, debug=False):
 	
 						Current path: {current_path}
 						Cache path: {cache_path}
-					Date path: {date_path}
-					Event path: {event_path}
+						Date path: {date_path}
+						Event path: {event_path}
 				""")
 
 
@@ -230,9 +233,9 @@ def download_drive_files(file_list=None, debug=False):
 	
 						Current path: {current_path}
 						Cache path: {cache_path}
-					Date path: {date_path}
-					Event path: {event_path}
-					Summary path: {summary_path}
+						Date path: {date_path}
+						Event path: {event_path}
+						Summary path: {summary_path}
 				""")
 
 
@@ -254,9 +257,9 @@ def download_drive_files(file_list=None, debug=False):
 	
 						Current path: {current_path}
 						Cache path: {cache_path}
-					Date path: {date_path}
-					Event path: {event_path}
-					Type path: {type_path}
+						Date path: {date_path}
+						Event path: {event_path}
+						Type path: {type_path}
 				""")
 
 
@@ -277,9 +280,9 @@ def download_drive_files(file_list=None, debug=False):
 	
 						Current path: {current_path}
 						Cache path: {cache_path}
-					Date path: {date_path}
-					Event path: {event_path}
-					Type path: {type_path}
+						Date path: {date_path}
+						Event path: {event_path}
+						Type path: {type_path}
 				""")
 
 
