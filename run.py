@@ -4,4 +4,4 @@
 from dae import *
 
 # Start the bot
-dae.run("Nzg4NDE3MzIxMTYwMTQ2OTU0.X9jM2Q.9rwvHO1hJYiG2G7BFTDFSb0A9VA")
+dae.run("Nzg4NDE3MzIxMTYwMTQ2OTU0.X9jM2Q.d__PbLx2tBDT_GK_J7D7XD8kbb4")

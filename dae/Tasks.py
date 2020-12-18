@@ -24,6 +24,7 @@ def get_current_events():
 	# Download current events and stream it directly into the return to be parsed
 	return requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content
 
+
 # Generate Event Document Templates for Each Event
 def generate_templates(debug=False):
 	# For each year in cache
