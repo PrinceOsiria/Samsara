@@ -10,5 +10,4 @@ from dae import *
 # Bot Initialization
 @dae.event
 async def on_ready():
-	print("Codename Samsara is: ONLINE")
 	samsara.start()
