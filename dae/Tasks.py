@@ -11,9 +11,7 @@ from dae import *
 def initiate_automated_cleanup():
 
 	# Non-Optional Output:
-	if output: print(f"""
-		#####################################################
-		STARTING CLEANUP SEQUENCE""")
+	if output: print("\nSTARTING CLEANUP SEQUENCE")
 
 	# Scan package root directory
 	root_dir = os.fspath(pathlib.Path().parent.absolute())
@@ -34,43 +32,30 @@ def initiate_automated_cleanup():
 		else:
 			if output["cleanup_sequence"]: print(f"{file} SUCCESSFULLY FOUND")
 
-	if output: print(f"""
-		CLEANUP SUCCESSFUL
-		#####################################################""")
+	if output: print("CLEANUP SUCCESSFUL\n")
+
 
 # Get current events and clean them for internalization
 def get_current_events():
 
 	# Non-Optional Output:
-	if output: print(f"""
-		#####################################################
-		ACQUIRING CURRENT EVENTS""")
+	if output: print("\nACQUIRING CURRENT EVENTS")
 
 	# Initialize Variables
-	internalized_events = []
+	standard_events = []
 
 	# Get current events
 	current_events = requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content.splitlines()[2:]
 	
 	# Optional Output
-	if output["dirty_current_events"]: print(f"""\n
-			Dirty Current Events:
-
-				{current_events}
-		
-		""")
+	if output["dirty_current_events"]: print(f"Dirty Current Events: {current_events}")
 	
 	# Clean and internalize current events
 	for event in current_events:
 		event = event.decode("UTF-8").replace("\"", "").split("'")
 
 		# Optional Output
-		if output["cleaner_actions"]: print(f"""\n
-				NOW CLEANING 
-		
-					{event}
-		
-			""")
+		if output["cleaner_actions"]: print(f"NOW CLEANING {event}")
 
 		# Clean the event
 		for i in event:
@@ -79,10 +64,7 @@ def get_current_events():
 
 		# Optional Output
 				if output["cleaner_actions"]:print(f"AN EVENT WAS CLEANED: {i} WAS REMOVED")
-		if output["clean_current_events"]: print(f"""\n
-				Clean Current Events: 
-					{current_events}
-			""")
+		if output["clean_current_events"]: print(f"Clean Current Events: {current_events}")
 
 		# Optional output
 		if output["event_internalization"]: print(f"Event of length {len(event)} is being Scanned . . . ")
@@ -108,7 +90,7 @@ def get_current_events():
 			evidence = non_standard_data[2]
 			summary = non_standard_data[3]
 
-			# Optional Output
+			##### DEBUG
 			if output["event_internalization"]:
 				print(f"""
 						["{title}"] WAS INTERNALIZED
@@ -127,8 +109,7 @@ def get_current_events():
 								Summary: {summary}
 					""")
 
-			# Add event to list of internalized events
-			internalized_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
+			standard_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
 
 			# Optional output
 			if output["event_internalization"]: print(f"Event of length {len(event)} Scanned successfully . . . ")
@@ -138,21 +119,16 @@ def get_current_events():
 
 
 	# Non-Optional Output:
-	if output: print(f"""
-		CURRENT EVENTS SUCCESSFULLY ACQUIRED
-		#####################################################""")
+	if output: print("CURRENT EVENTS SUCCESSFULLY ACQUIRED\n")
 
 	# Return Current Events
-	return internalized_events
+	return standard_events
 
 
 # Add current events to the database
 def update_database(current_events):
-	if output: print(f"""
-		#####################################################
-		UPDATING DATABASE""")
-
 	for event in current_events:
+	
 		if not session.query(Event).filter_by(date=event.date, title=event.title).first():
 			add_to_db(event)
 
@@ -160,34 +136,19 @@ def update_database(current_events):
 			if output["database_update"]: print(f"'{event.title}' WAS ADDED TO THE INTERNAL DATABASE")
 		elif output["database_update"]: print(f"'{event.title}' ALREADY EXISTS IN THE INTERNAL DATABASE")
 
-	if output: print(f"""
-		DATABASE SUCCESSFULLY UPDATED
-		#####################################################""")
 
 ###########################################################################################################################################
 ##################################################### Tasks $##############################################################################
 ###########################################################################################################################################
 # Task Practice
 @tasks.loop(seconds=120)
-async def samsara():
+async def samsara(output=None):
 
-	# Non-Optional Output
-	if output: print(f"""
-###########################################################################################################################################
-Codename Samsara is: ONLINE""")
-
-
-	##### CONFIRMED WORKING AREA
+	# Scan the root directory and delete any unrecognized files
 	initiate_automated_cleanup()
+
+	# Get current events and add them to the database
 	update_database(get_current_events())
 
-
-	##### EXPERIMENTAL AREA
-	# Do stuff
-
-
-
-	# Non-Optional Output
-	if output: print(f"""
-Codename Samsara is: OFFLINE
-###########################################################################################################################################""")
+	# Testing
+	print("ready to continue!")

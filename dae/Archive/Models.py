@@ -6,6 +6,7 @@ from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
@@ -29,74 +30,12 @@ def add_to_db(some_object):
 	session.commit()
 
 ###########################################################################################################################################
-##################################################### Associations ########################################################################
+##################################################### Model ###############################################################################
 ###########################################################################################################################################
-
-
-
-
-
-###########################################################################################################################################
-##################################################### Models ##############################################################################
-###########################################################################################################################################
-# Year Model
-class Year(Base):
-	__tablename__ = "Year"
-	Year = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
-
-	# Many
-	months = None
-	days = None
-	events = None
-
-
-
-# Month Model
-class Month(Base):
-	__tablename__ = "Month"
-	Month = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
-
-	# One
-	year = None
-
-	# Many
-	days = None
-	events = None
-
-
-
-# Day Model
-class Day(Base):
-	__tablename__ = "Day"
-	Day = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
-
-	# One
-	Year = None
-	Month = None
-
-	# Many
-	Events = None
-
-
-
-# Event Model
+# Data Model
 class Event(Base):
 	__tablename__ = "Event"
 	id = Column(Integer, primary_key=True)
-
-	# Archive Information
-	drive_event_folder_id = Column(String())
-	drive_archive_folder_id = Column(String())
-	drive_summary_document_id = Column(String())
-
-	# Timeline Connections
-	# One
-	Year = None
-	Month = None
-	Day = None
 
 	# Meta Information
 	archived_on = Column(String())
@@ -110,3 +49,6 @@ class Event(Base):
 	evidence = Column(String())
 	tags = Column(String())
 	summary = Column(String())
+
+	def display(self):
+		print(f"Archived on: {self.archived_on}\n Archived by: {self.archived_by}\n Date of Event: {self.date}\n Name of Event: {self.title}\n Tags: {self.tags}\n Evidence: {self.evidence}\n Summary: {self.summary}\n ")
