@@ -1,210 +1,75 @@
 ###########################################################################################################################################
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
-# Core Discord Imports
+# Imports
 from dae import *
-from dae.Archive.Model import *
-
-# MIME Type Identification
-import magic
-
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
-# Get this month's events from the shared sheet
-def get_current_events(debug=True):
-	# Clean the root directory (Prevents errors is crashed/interrupted during last run)
+# Clean the root directory (Prevents errors is crashed/interrupted during last run)
+def initiate_automated_cleanup():
+
+	# Non-Optional Output:
+	if output: print("\nSTARTING CLEANUP SEQUENCE")
+
+	# Scan package root directory
 	root_dir = os.fspath(pathlib.Path().parent.absolute())
 	root_files = os.listdir(root_dir)
 
-	if debug:
-		print(f"""
-				root_dir: {root_dir}
-				root_files: {root_files}
-			""")
+	# Optional Output
+	if output["cleanup_sequence"]: print(f"""
+			root_dir: {root_dir}
+			root_files: {root_files}
+		""")
 
 	for file in root_files:
 		if file not in ["dae", "run.py", "README.md", ".gitignore", ".gitattributes", ".git"]:
-			print(f"{file} WAS DELETED DURING AN AUTOMATED CLEANUP SEQUENCE")
-			os.remove(file)
+			os.remove(file) # Delete the file
+
+		# Optional Output
+			if output["cleanup_sequence"]: print(f"{file} WAS DELETED DURING AN AUTOMATED CLEANUP SEQUENCE")
 		else:
-			if debug:
-				print(f"{file} SUCCESSFULLY FOUND")
+			if output["cleanup_sequence"]: print(f"{file} SUCCESSFULLY FOUND")
 
-	# Download current events and stream it directly into the return to be parsed
-	return requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content
+	if output: print("CLEANUP SUCCESSFUL\n")
 
 
-# Generate Event Document Templates for Each Event
-def generate_templates(debug=True):
-	# For each year in cache
-	cache_dir = (os.fspath(pathlib.Path().parent.absolute()) + f"\\dae\\Archive\\Cache\\")
-	year_folders = os.listdir(cache_dir)
-	for year_folder in year_folders:
+# Get current events and clean them for internalization
+def get_current_events():
 
-		##### DEBUG
-		if debug:
-			print(f"""
-					Cache Directory: {cache_dir}
-					Year Folders: {year_folders}
-					Current Year: {year_folder}
-			""")	
+	# Non-Optional Output:
+	if output: print("\nACQUIRING CURRENT EVENTS")
 
-
-		# for each month in year
-		year_dir = cache_dir + f"{year_folder}\\"
-		month_folders = os.listdir(year_dir)
-		for month_folder in month_folders:
-
-			##### DEBUG
-			if debug:
-				print(f"""
-						Year Directory: {year_dir}
-						Month Folders: {month_folders}
-						Current Month: {month_folder}
-					""")
-
-
-			# for each day in month
-			month_dir = year_dir + f"{month_folder}\\"
-			day_folders = os.listdir(month_dir)
-			for day_folder in day_folders:
-
-				##### DEBUG
-				if debug:
-					print(f"""
-							Month Directory: {month_dir}
-							Day Folders: {day_folders}
-							Current Day: {day_folder}
-						""")
-
-
-				# for each event in day
-				day_dir = month_dir + f"{day_folder}\\"
-				event_folders = os.listdir(day_dir)
-				for event_folder in event_folders:
-
-
-					##### DEBUG
-					if debug:
-						print(f"""
-								Day Directory: {day_dir}
-								Event Folders: {event_folders}
-								Current Event: {event_folder}
-							""")
-
-
-
-
-					## Generate Template for Event Document
-					# Identify Present File Types
-					event_dir = day_dir + f"{event_folder}\\"
-					type_folders = os.listdir(event_dir)
-
-
-
-					# Add Images to template
-					if "image" in type_folders:
-						image_dir = event_dir+"image\\"
-						image_files = os.listdir(image_dir)
-
-						##### DEBUG
-						if debug:
-							print(f"""
-									Image Directory: {image_dir}
-									Image Files: {image_files}
-								""")
-
-
-
-					# Add summary to template
-					if "text" in type_folders:
-						text_dir = event_dir+"text\\"
-						text_files = os.listdir(text_dir)
-
-						##### DEBUG
-						if debug:
-							print(f"""
-									Text Directory: {text_dir}
-									Text Files: {text_files}
-								""")
-
-
-
-					# Add video to template
-					if "video" in type_folders:
-						video_dir = event_dir+"video\\"
-						video_files = os.listdir(video_dir)
-
-						##### DEBUG
-						if debug:
-							print(f"""
-									Video Directory: {video_dir}
-									Video Files: {video_files}
-								""")
-
-
-
-					# Add audio to template
-					if "audio" in type_folders:
-						audio_dir = event_dir+"audio\\"
-						audio_files = os.listdir(audio_dir)
-
-						##### DEBUG
-						if debug:
-							print(f"""
-									Audio Directory: {audio_dir}
-									Audio Files: {audio_files}
-								""")
-
-
-
-
-
-			
-
-
-###########################################################################################################################################
-##################################################### Tasks $##############################################################################
-###########################################################################################################################################
-# Task Practice
-@tasks.loop(seconds=120)
-async def validate_archive(debug=True):
 	# Initialize Variables
 	standard_events = []
 
 	# Get current events
-	current_events = get_current_events().splitlines()[2:]
-
-	# Parse current events for every individual event
+	current_events = requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content.splitlines()[2:]
+	
+	# Optional Output
+	if output["dirty_current_events"]: print(f"Dirty Current Events: {current_events}")
+	
+	# Clean and internalize current events
 	for event in current_events:
 		event = event.decode("UTF-8").replace("\"", "").split("'")
 
-		##### DEBUG
-		if debug:
-			print(f"""
-					{event} WAS INITIALIZED
-				""")
-		
+		# Optional Output
+		if output["cleaner_actions"]: print(f"NOW CLEANING {event}")
+
 		# Clean the event
 		for i in event:
 			if i in [",", " ", ""]:
 				event.remove(i)
 
-				##### DEBUG
-				if debug:
-					print(f"""
-							{event} WAS CLEANED: {i} WAS REMOVED
-						""")
+		# Optional Output
+				if output["cleaner_actions"]:print(f"AN EVENT WAS CLEANED: {i} WAS REMOVED")
+		if output["clean_current_events"]: print(f"Clean Current Events: {current_events}")
 
-		##### DEBUG
-		if debug:
-			print(f"""
-					{event} WAS CLEANED SUCCESSFULLY
-				""")
+		# Optional output
+		if output["event_internalization"]: print(f"Event of length {len(event)} is being Scanned . . . ")
 
-		# If the event is formatted correctly
+		# If the event is formatted correctly, internalize it
 		if len(event) == 4:
 			## Variable Initialization
 			# Standard Data
@@ -226,9 +91,9 @@ async def validate_archive(debug=True):
 			summary = non_standard_data[3]
 
 			##### DEBUG
-			if debug:
+			if output["event_internalization"]:
 				print(f"""
-						{event} WAS INTERNALIZED
+						["{title}"] WAS INTERNALIZED
 
 							-- META --
 								Archived on: {archived_on}
@@ -246,45 +111,44 @@ async def validate_archive(debug=True):
 
 			standard_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
 
+			# Optional output
+			if output["event_internalization"]: print(f"Event of length {len(event)} Scanned successfully . . . ")
+		
 
-	##### DEBUG
-	if debug:
-		print(f"""
-				-- STANDARD EVENTS --
-					{standard_events}
-			""")
+		elif output["event_internalization"]: print(f"INCORRECT FORMATTING: {event}")
 
 
-	# Duplicate Preventing Database Uploader
-	for event in standard_events:
-		if not len(session.query(Event).filter_by(date=event.date, title=event.title).all())>0:
+	# Non-Optional Output:
+	if output: print("CURRENT EVENTS SUCCESSFULLY ACQUIRED\n")
+
+	# Return Current Events
+	return standard_events
+
+
+# Add current events to the database
+def update_database(current_events):
+	for event in current_events:
+	
+		if not session.query(Event).filter_by(date=event.date, title=event.title).first():
 			add_to_db(event)
 
-			##### DEBUG
-			if debug:
-				print(f"""
-						'{event.title}' WAS ADDED TO THE INTERNAL DATABASE
-					""")
-		else:
-			##### DEBUG
-			if debug:
-				print(f"""
-						'{event.title}' ALREADY EXISTS IN THE INTERNAL DATABASE
-					""")
-
-		
-	
-	# Gets root files and stores them in a nested dictionary which contains that files title and id
-	Google_Drive = startup_drive()
-
-	# Get evidence files
-	evidence_files = get_child_files_from_drive_id(parent_id=Google_Drive["Evidence"]["id"])
-
-	# Download evidence files
-	download_drive_files(file_list=evidence_files, debug=True)
-
-	# Generate p107 documents for events from files
-	generate_templates(debug=True)
+		# Optional Output
+			if output["database_update"]: print(f"'{event.title}' WAS ADDED TO THE INTERNAL DATABASE")
+		elif output["database_update"]: print(f"'{event.title}' ALREADY EXISTS IN THE INTERNAL DATABASE")
 
 
-	print("finished!")
+###########################################################################################################################################
+##################################################### Tasks $##############################################################################
+###########################################################################################################################################
+# Task Practice
+@tasks.loop(seconds=120)
+async def samsara(output=None):
+
+	# Scan the root directory and delete any unrecognized files
+	initiate_automated_cleanup()
+
+	# Get current events and add them to the database
+	update_database(get_current_events())
+
+	# Testing
+	print("ready to continue!")

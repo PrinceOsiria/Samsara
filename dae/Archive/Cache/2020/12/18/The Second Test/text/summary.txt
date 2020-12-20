@@ -1,1 +1,0 @@
-On December 18th, samsara testing continued. Specifically, editing pre-existing data, and uploading multiple file-types was tested, to ensure that the data pipeline can handle diverse and variable input
