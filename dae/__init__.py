@@ -17,11 +17,14 @@ from pydrive.drive import GoogleDrive
 import google.auth
 import requests
 
-# Database Models
+# Database Model
 from dae.Archive.Models import *
 
-# Google Drive Functions
-from .Modules.pydrive_wrapper import *
+# Google Drive Access Functions
+from dae.Modules.pydrive_wrapper import *
+
+# Bot Options
+from dae.Config import output_options
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
@@ -35,21 +38,8 @@ scope = ['https://www.googleapis.com/auth/drive']
 gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/private_key.json", scope)
 drive = GoogleDrive(gauth)
 
-# Select output variables:
-output = dict(
-
-    # Automated Cleanup Sequence
-    cleanup_sequence = False,
-
-    # Get Current Events
-    dirty_current_events = False,
-    cleaner_actions = False,
-    clean_current_events = False,
-    event_internalization = False,
-
-    # Update Database
-    database_update = False
-  )
+# Output Options
+output = output_options["all_false"]
 
 ###########################################################################################################################################
 ##################################################### Main ################################################################################
