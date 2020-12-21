@@ -1,51 +1,87 @@
 ###########################################################################################################################################
+##################################################### Imports #############################################################################
+###########################################################################################################################################
+# Google Drive Access
+from pydrive.drive import GoogleDrive
+from pydrive.auth import GoogleAuth, ServiceAccountCredentials
+import google.auth
+
+###########################################################################################################################################
+##################################################### Configuration #######################################################################
+###########################################################################################################################################
+# Authentication
+gauth = GoogleAuth()
+scope = ['https://www.googleapis.com/auth/drive']
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/private_key.json", scope)
+drive = GoogleDrive(gauth)
+
+
+###########################################################################################################################################
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
-# Query drive
-def query_drive(query=None):
-  if query:
-    return drive.ListFile(dict(q = query)).GetList()
+# Create Drive Folder
+def create_drive_folder(id=None, title=None):
+  file1 = drive.CreateFile({
+    'title': title, 
+    'parents': [{'id':id}],
+    'mimeType': 'application/vnd.google-apps.folder'
+    })
+  file1.Upload()
+  return file1["id"]
 
-# Internalize files from filelist
-def internalize_drive_file(file_list=None):
 
-  # Get file title
-  def get_title_from_drive_filelist(file_list=None):
-    for file in file_list:
-      if file["title"]:
-        return file["title"]
+# Check listing of files for a matching title
+def check_files_for_title(files=None,title=None):
+  if title in files["titles"]:
+    index = files["titles"].index(title)
 
-  # Get file id
-  def get_id_from_drive_filelist(file_list=None):
-    for file in file_list:
-      if file["id"]:
-        return file["id"]
-
-  # Get file mime
-  def get_mime_from_drive_filelist(file_list=None):
-    for file in file_list:
-      if file["mimeType"]:
-        return file["mimeType"]
-
-  return dict(
-    title = get_title_from_drive_filelist(file_list=file_list),
-    id = get_id_from_drive_filelist(file_list=file_list),
-    mimeType = get_mime_from_drive_filelist(file_list=file_list)
+    return dict(
+      title = files["titles"][index],
+      id = files["ids"][index],
+      mimeType = files["mimeTypes"][index]
     )
 
-# Download files given a dictionary with title and id pairings for files
-def download_drive_files(file_list=None, debug=True):
-  for file in file_list:
 
-    # Identify files
-    title = file["title"]
-    id = file["id"]
-    file_mime = file["mimeType"]
+# Check listing of files for a matching id
+def check_files_for_id(files=None,id=None):
+  if id in files["ids"]:
+    index = files["ids"].index(id)
 
-    # Download files
-    files = query_drive(f"title = '{title}'")
-    for dl in files:
-      dl.GetContentFile(title)
+    return dict(
+      title = files["titles"][index],
+      id = files["ids"][index],
+      mimeType = files["mimeTypes"][index]
+    )
 
-      # Search events for an id-evidence match
-      os.rename(title, id)
+
+# Get file title
+def get_titles_from_fileList(fileList):
+  titles = []
+  for file in fileList:
+    if file["title"]:
+      titles.append(file["title"])
+  return titles
+# Get file id
+def get_ids_from_fileList(fileList):
+  titles = []
+  for file in fileList:
+    if file["id"]:
+      titles.append(file["id"])
+  return titles
+# Get file mime
+def get_mimes_from_fileList(fileList):
+  titles = []
+  for file in fileList:
+    if file["mimeType"]:
+      titles.append(file["mimeType"])
+  return titles
+
+# Query drive & Internalize the results
+def query_drive(query):
+  fileList = drive.ListFile(dict(q = query)).GetList()
+ 
+  return dict(
+    titles = get_titles_from_fileList(fileList),
+    ids = get_ids_from_fileList(fileList),
+    mimeTypes = get_mimes_from_fileList(fileList)
+    )

@@ -2,9 +2,9 @@
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
 # SQL-Alchemy
-from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
@@ -29,56 +29,59 @@ def add_to_db(some_object):
 	session.commit()
 
 ###########################################################################################################################################
-##################################################### Associations ########################################################################
-###########################################################################################################################################
-
-
-
-
-
-###########################################################################################################################################
 ##################################################### Models ##############################################################################
 ###########################################################################################################################################
+# Root Drive Model
+class Drive(Base):
+	__tablename__ = "Drive"
+	root_folder_id = Column(String, primary_key=True, unique=True)
+	NITE_folder_id = Column(String, unique=True)
+	evidence_folder_id = Column(String, unique=True)
+	DAE_folder_id = Column(String, unique=True)
+	archive_folder_id = Column(String, unique=True)
+	current_events_file_id = Column(String, unique=True)
+
+
+
 # Year Model
 class Year(Base):
 	__tablename__ = "Year"
-	Year = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
+	# Drive Information
+	drive_folder_id = Column(String, primary_key=True)
 
-	# Many
-	months = None
-	days = None
-	events = None
+	# Timeline 
+	year = Column(Integer, unique=True)
+	months = relationship("Month", backref="year")
+	days = relationship("Day", backref="year")
+	events = relationship("Event", backref="year")
 
 
 
 # Month Model
 class Month(Base):
 	__tablename__ = "Month"
-	Month = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
+	# Drive Information
+	drive_folder_id = Column(String, primary_key=True)
 
-	# One
-	year = None
-
-	# Many
-	days = None
-	events = None
+	# Timeline
+	year_id = Column(Integer, ForeignKey('Year.drive_folder_id'))
+	month = Column(Integer)
+	days = relationship("Day", backref="month")
+	events = relationship("Event", backref="month")
 
 
 
 # Day Model
 class Day(Base):
 	__tablename__ = "Day"
-	Day = Column(String, primary_key=True)
-	drive_folder_id = Column(Integer)
+	# Drive Information
+	drive_folder_id = Column(String, primary_key=True)
 
-	# One
-	Year = None
-	Month = None
-
-	# Many
-	Events = None
+	# Timeline 
+	year_id = Column(Integer, ForeignKey('Year.drive_folder_id'))
+	month_id = Column(Integer, ForeignKey('Month.drive_folder_id'))
+	day = Column(Integer)
+	events = relationship("Event", backref="day")
 
 
 
@@ -87,16 +90,16 @@ class Event(Base):
 	__tablename__ = "Event"
 	id = Column(Integer, primary_key=True)
 
-	# Archive Information
+	# Timeline
+	year_id = Column(Integer, ForeignKey('Year.drive_folder_id'))
+	month_id = Column(Integer, ForeignKey('Month.drive_folder_id'))
+	day_id = Column(Integer, ForeignKey('Day.drive_folder_id'))
+
+
+	# Drive  Information
 	drive_event_folder_id = Column(String())
 	drive_archive_folder_id = Column(String())
 	drive_summary_document_id = Column(String())
-
-	# Timeline Connections
-	# One
-	Year = None
-	Month = None
-	Day = None
 
 	# Meta Information
 	archived_on = Column(String())

@@ -11,10 +11,7 @@ from discord.ext import commands, tasks
 # Project 108 Imports
 from .Modules import p108_module as p108
 
-# Google Drive Access
-from pydrive.auth import GoogleAuth, ServiceAccountCredentials
-from pydrive.drive import GoogleDrive
-import google.auth
+# Web-Requests Access
 import requests
 
 # Database Model
@@ -24,22 +21,16 @@ from dae.Archive.Models import *
 from dae.Modules.pydrive_wrapper import *
 
 # Bot Options
-from dae.Config import output_options
+from dae.Config import output_options, selected_output_option, command_prefix
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
 # Bot Prefix
-dae = commands.Bot(command_prefix="!")
-
-# Authentication
-gauth = GoogleAuth()
-scope = ['https://www.googleapis.com/auth/drive']
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/private_key.json", scope)
-drive = GoogleDrive(gauth)
+dae = commands.Bot(command_prefix=command_prefix)
 
 # Output Options
-output = output_options["all_false"]
+output = output_options[selected_output_option]
 
 ###########################################################################################################################################
 ##################################################### Main ################################################################################

@@ -10,4 +10,5 @@ from dae import *
 # Bot Initialization
 @dae.event
 async def on_ready():
+	#refresh_database()
 	samsara.start()

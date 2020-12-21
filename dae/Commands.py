@@ -2,13 +2,13 @@
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
 # Core Discord Imports
-from samsara import *
+from dae import *
 
 ###########################################################################################################################################
 ##################################################### Commands ############################################################################
 ###########################################################################################################################################
 # Encode Hels
-@Samsara.command()
+@dae.command()
 async def encode(ctx, clearText, alphaKey, keys):
 	# Variable Initialization
 	alphabet = p108.create_alphabet(alphaKey)
@@ -30,7 +30,7 @@ async def encode(ctx, clearText, alphaKey, keys):
 
 
 # Decode Hels
-@Samsara.command()
+@dae.command()
 async def decode(ctx, cipherText, alphaKey, keys):
 	# Variable Initialization
 	alphabet = p108.create_alphabet(alphaKey)

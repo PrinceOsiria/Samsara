@@ -1,8 +1,8 @@
 ###########################################################################################################################################
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
-# Core Discord Imports
-from samsara import *
+# Bot Imports
+from dae import *
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
@@ -11,9 +11,7 @@ from samsara import *
 def initiate_automated_cleanup():
 
   # Non-Optional Output:
-  if output: print(f"""
-    #####################################################
-    STARTING CLEANUP SEQUENCE""")
+  if output: print(f"""\n#####################################################\nSTARTING CLEANUP SEQUENCE\n""")
 
   # Scan package root directory
   root_dir = os.fspath(pathlib.Path().parent.absolute())
@@ -30,27 +28,24 @@ def initiate_automated_cleanup():
       os.remove(file) # Delete the file
 
     # Optional Output
-      if output["cleanup_sequence"]: print(f"{file} WAS DELETED DURING AN AUTOMATED CLEANUP SEQUENCE")
+      if output["cleanup_sequence"]: print(f"{file} Was Deleted")
     else:
-      if output["cleanup_sequence"]: print(f"{file} SUCCESSFULLY FOUND")
+      if output["cleanup_sequence"]: print(f"{file} Was Detected")
 
-  if output: print(f"""
-    CLEANUP SUCCESSFUL
-    #####################################################""")
+  if output: print(f"""\nCLEANUP SUCCESSFUL\n#####################################################\n""")
 
 # Get current events and clean them for internalization
 def get_current_events():
 
   # Non-Optional Output:
-  if output: print(f"""
-    #####################################################
-    ACQUIRING CURRENT EVENTS""")
+  if output: print(f"""\n#####################################################\nACQUIRING CURRENT EVENTS\n""")
 
   # Initialize Variables
   internalized_events = []
+  current_events_file_id = session.query(Drive).first().current_events_file_id
 
   # Get current events
-  current_events = requests.get("https://docs.google.com/spreadsheets/d/1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content.splitlines()[2:]
+  current_events = requests.get(f"https://docs.google.com/spreadsheets/d/{current_events_file_id}/export?format=csv&id=1wbcY8SdHHHkZd-pg6cQjMm1o0xQZ8TsAWaO5jf31DJs&gid=1623064726").content.splitlines()[2:]
   
   # Optional Output
   if output["dirty_current_events"]: print(f"""\n
@@ -78,7 +73,7 @@ def get_current_events():
         event.remove(i)
 
     # Optional Output
-        if output["cleaner_actions"]:print(f"AN EVENT WAS CLEANED: {i} WAS REMOVED")
+        if output["cleaner_actions"]:print(f"An Event was Cleaned: {i} Was Removed")
     if output["clean_current_events"]: print(f"""\n
         Clean Current Events: 
           {current_events}
@@ -111,7 +106,7 @@ def get_current_events():
       # Optional Output
       if output["event_internalization"]:
         print(f"""
-            ["{title}"] WAS INTERNALIZED
+            ["{title}"] Was Internalized
 
               -- META --
                 Archived on: {archived_on}
@@ -134,33 +129,25 @@ def get_current_events():
       if output["event_internalization"]: print(f"Event of length {len(event)} Scanned successfully . . . ")
     
 
-    elif output["event_internalization"]: print(f"INCORRECT FORMATTING: {event}")
+    elif output["event_internalization"]: print(f"Incorrect Formatting: {event}")
 
 
   # Non-Optional Output:
-  if output: print(f"""
-    CURRENT EVENTS SUCCESSFULLY ACQUIRED
-    #####################################################""")
+  if output: print(f"""\nCURRENT EVENTS SUCCESSFULLY ACQUIRED\n#####################################################\n""")
 
   # Return Current Events
   return internalized_events
 
 # Add current events to the database
 def update_database(current_events):
-  if output: print(f"""
-    #####################################################
-    UPDATING DATABASE""")
+  if output: print(f"""\n#####################################################\nUPDATING DATABASE\n""")
 
   for event in current_events:
     if not session.query(Event).filter_by(date=event.date, title=event.title).first():
       add_to_db(event)
 
     # Optional Output
-      if output["database_update"]: print(f"'{event.title}' WAS ADDED TO THE INTERNAL DATABASE")
-    elif output["database_update"]: print(f"'{event.title}' ALREADY EXISTS IN THE INTERNAL DATABASE")
+      if output["database_update"]: print(f"'{event.title}' Was Added to the Internal Database")
+    elif output["database_update"]: print(f"'{event.title}' Already Exists in the Internal Database")
 
-  if output: print(f"""
-    DATABASE SUCCESSFULLY UPDATED
-    #####################################################""")
-
-
+  if output: print(f"""\nDATABASE SUCCESSFULLY UPDATED\n#####################################################\n""")
