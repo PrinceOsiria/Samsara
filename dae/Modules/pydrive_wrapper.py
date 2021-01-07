@@ -12,7 +12,7 @@ import google.auth
 # Authentication
 gauth = GoogleAuth()
 scope = ['https://www.googleapis.com/auth/drive']
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/private_key.json", scope)
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("/home/GitHub/Samsara/dae/Archive/private_key.json", scope)
 drive = GoogleDrive(gauth)
 
 
