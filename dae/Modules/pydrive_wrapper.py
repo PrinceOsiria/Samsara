@@ -1,6 +1,9 @@
 ###########################################################################################################################################
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
+#Configuration
+from dae.Config import private_key_location
+
 # Google Drive Access
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth, ServiceAccountCredentials
@@ -12,7 +15,7 @@ import google.auth
 # Authentication
 gauth = GoogleAuth()
 scope = ['https://www.googleapis.com/auth/drive']
-gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name("/home/GitHub/Samsara/dae/Archive/private_key.json", scope)
+gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(private_key_location, scope)
 drive = GoogleDrive(gauth)
 
 

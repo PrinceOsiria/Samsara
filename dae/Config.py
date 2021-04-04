@@ -1,12 +1,21 @@
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
-# Output options
+# Input Options
 command_prefix = "!"
-selected_output_option = "minimal_med"
+
+# Output options
+selected_output_option = "all_true"
+
+# Drive Filesystem Configuration
 root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
 
 
+# Local Filesystem Configuration
+private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
+
+
+# Output Configurations
 output_options = dict(
 
 	custom = dict(
