@@ -73,9 +73,13 @@ def scan_drive(root_folder_id = root_folder_id):
 		# Optional Output		
 		if output["drive_scan"]: print("\nLooking for 'Evidence':")
 		
-		# Scan Root Files for a matching title
-		evidence_folder_id = check_files_for_title(files=NITE_files, title="Evidence")["id"]
-		
+		# Scan for Data Collection Folder
+		data_collection_folder_id = check_files_for_title(files=NITE_files, title="Data Collection")["id"]
+		data_collection_files = query_drive(f"'{data_collection_folder_id}' in parents")
+
+		# Scan for Evidence Folder
+		evidence_folder_id = check_files_for_title(files=data_collection_files, title="Evidence")["id"]
+
 		# Optional Output
 		if output["drive_scan"]: print(f"\tFile was Found with ID: {evidence_folder_id}\n")
 
@@ -291,7 +295,7 @@ def archive_events(new_events):
 		year = session.query(Year).filter_by(year=year).first()
 
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tThe Year '{year.year}' Archived")
+		if output["new_events"]: print(f"\t\t\tThe Year '{year.year}' Was Successfully Archived")
 
 
 
@@ -440,23 +444,24 @@ def archive_events(new_events):
 
 		## GENERATE EVENT SUMMARIES
 
+		# Optional Output
+		if output["new_events"]: print(f"\n\t\t\tScanning for Evidence pertaining to {event.title}")
+
+
 		# Get current evidence
 		evidence_folder_id = session.query(Drive).first().evidence_folder_id
 		evidence_files = query_drive(f"'{evidence_folder_id}' in parents")
 		evidence_list = []
 
-		for link in [event.evidence]:
-			id = link.split("/")[-2]
+		# Internalize Evidence from Event
+		for link in event.evidence.split(","):
+			id = link.split("open?id=")[1]
 			evidence_list.append(check_files_for_id(files=evidence_files,id=id))
 
-
-		print(f"\nEvidence List:\n\t{evidence_list}")
-
-
+		# Optional Output
+		if output["new_events_plus"]: print(f"\t\tEvidence List:\n\t{evidence_list}")
 
 
-
-		# Get evidence from events
 		# Look for archive folder
 			# If there, update accordingly
 			# Otherwise, create it
@@ -465,7 +470,7 @@ def archive_events(new_events):
 
 
 		# Optional Output
-		if output["new_events"]: print(f"""Event Archived Successfully""")
+		if output["new_events"]: print(f"""Event Archived Successfully\n""")
 
 
 	# Non-Optional Output
