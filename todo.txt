@@ -1,5 +1,0 @@
-fix requirements.txt
-lowercase readme and convert to txt
-git ignore the todo.txt file (this)
-test data input (evidence files seem to be dissappearing (or a media file organizing solution needs made)
-more in notes

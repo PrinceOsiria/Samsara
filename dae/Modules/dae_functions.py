@@ -24,7 +24,7 @@ def initiate_automated_cleanup():
     """)
 
   for file in root_files:
-    if file not in ["dae", "run.py", "README.md", ".gitignore", ".gitattributes", ".git"]:
+    if file not in ["dae", "run.py", "readme.txt", "requirements.txt", ".gitignore", ".gitattributes", ".git"]:
       os.remove(file) # Delete the file
 
     # Optional Output
