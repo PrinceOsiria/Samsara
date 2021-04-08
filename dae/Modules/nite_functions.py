@@ -459,7 +459,12 @@ def archive_events(new_events):
 			evidence_list.append(check_files_for_id(files=evidence_files,id=id))
 
 		# Optional Output
-		if output["new_events_plus"]: print(f"\t\tEvidence List:\n\t{evidence_list}")
+		if output["new_events_plus"]: print(f"\t\t\tEvidence List Generated")
+
+
+		# Optional Output
+		if output["new_events"]: print(f"\n\t\t\tScanning {event.title} for Data Archive")
+
 
 
 		# Look for archive folder
