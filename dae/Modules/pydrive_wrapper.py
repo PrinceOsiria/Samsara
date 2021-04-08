@@ -33,6 +33,18 @@ def create_drive_folder(id=None, title=None):
   return file1["id"]
 
 
+# Move Drive File
+def move_drive_file(file_id=None, parent_id=None):
+  file1 = drive.CreateFile({'id': file_id})
+  file1['parents'] = [{
+    "kind": "drive#parentReference",
+    "id": parent_id
+    }]
+  file1.Upload()
+  return file1["parents"]
+
+
+
 # Check listing of files for a matching title
 def check_files_for_title(files=None,title=None):
   if title in files["titles"]:

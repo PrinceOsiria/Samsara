@@ -468,17 +468,65 @@ def archive_events(new_events):
 
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tCreating Media Archive for '{event.title}'")
+		if output["new_events"]: print(f"\n\t\t\tCreating Archive Folder for '{event.title}'")
 
+		# Create and Internalize the archive folder
+		event.drive_archive_folder_id = create_drive_folder(id=event.drive_event_folder_id, title="Archive")
+		session.commit()
 
-		# Workspace
-		
+		# Create and internalize the mimeType folders
+		event.drive_archive_image_folder_id = create_drive_folder(id=event.drive_archive_folder_id, title="Images")
+		event.drive_archive_text_folder_id = create_drive_folder(id=event.drive_archive_folder_id, title="Text")
+		event.drive_archive_video_folder_id = create_drive_folder(id=event.drive_archive_folder_id, title="Video")
+		event.drive_archive_audio_folder_id = create_drive_folder(id=event.drive_archive_folder_id, title="Audio")
+		session.commit()
 
+		# Optional Output
+		if output["new_events_plus"]: print(f"\t\t\tArchive folder created with id: '{event.drive_archive_folder_id}'")
 
-		# Create Archive Folder - Events with existing archive folders are classified as complete so validating the folder is not necessary
-		# Add a link to the current event
+		# Optional Output
+		if output["new_events"]: print(f"\n\t\t\tMoving Evidence into Event Archive")
+
 		# Move evidence into archive by MIME Type
+		for file in evidence_list:
 
+			file_title = file['title']			
+			file_mimeType = file['mimeType'].split("/")[0]
+			file_id = file['id']
+
+			# Optional Output
+			if output["new_events_plus"]: print(f"\n\tFILE TITLE: {file_title}\n\tFILE MIME {file_mimeType}\n\tFILE ID: {file_id}")
+			
+			# Image Files
+			if file_mimeType == "image":
+
+				# Optional Output
+				if output["new_events_plus"]: print(f"Image File '{file_title}' being moved...")
+
+				# Move File into Folder
+				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
+				print(parents)
+
+				# Video Files
+			if file_mimeType == "video":
+
+				# Optional Output
+				if output["new_events_plus"]: print(f"Video File '{file_title}' being moved...")
+
+				# Move File into Folder
+				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
+				print(parents)
+			# Audio Files
+			if file_mimeType == "audio":
+
+				# Optional Output
+				if output["new_events_plus"]: print(f"Audio File '{file_title}' being moved...")
+
+				# Move File into Folder
+				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
+				print(parents)
+			# Text Files
+				# Generate text file from event description
 
 		# Optional Output
 		if output["new_events"]: print(f"""Event Archived Successfully\n""")

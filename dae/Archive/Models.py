@@ -101,6 +101,12 @@ class Event(Base):
 	drive_archive_folder_id = Column(String())
 	drive_summary_document_id = Column(String())
 
+	# Archive mimeType folders
+	drive_archive_image_folder_id = Column(String())
+	drive_archive_text_folder_id = Column(String())
+	drive_archive_video_folder_id = Column(String())
+	drive_archive_audio_folder_id = Column(String())
+
 	# Meta Information
 	archived_on = Column(String())
 	archived_by = Column(String())
