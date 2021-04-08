@@ -158,8 +158,13 @@ def scan_drive(root_folder_id = root_folder_id):
 		# Optional Output		
 		if output["drive_scan"]: print("\nLooking for 'Evidence':")
 		
-		# Scan Root Files for a matching title
-		evidence_folder_id = check_files_for_title(files=NITE_files, title="Evidence")["id"]
+
+		# Scan for Data Collection Folder
+		data_collection_folder_id = check_files_for_title(files=NITE_files, title="Data Collection")["id"]
+		data_collection_files = query_drive(f"'{data_collection_folder_id}' in parents")
+
+		# Scan for Evidence Folder
+		evidence_folder_id = check_files_for_title(files=data_collection_files, title="Evidence")["id"]
 		
 		# Optional Output
 		if output["drive_scan"]: print(f"\tFile was found with ID: {evidence_folder_id}\n")
@@ -432,7 +437,7 @@ def archive_events(new_events):
 			session.commit()
 
 			# Optional Output
-			if output["new_events_plus"]: print(f"\t\t\tThe Event '{title}' was created with ID: {folder_id}")
+			if output["new_events_plus"]: print(f"\t\t\tThe Event '{title}' was created with ID: {event.drive_event_folder_id}")
 		
 		# Determine the Correct Event
 		event = session.query(Event).filter_by(title=title, day_id=day.drive_folder_id, month_id=month.drive_folder_id, year_id=year.drive_folder_id).first()
@@ -445,7 +450,7 @@ def archive_events(new_events):
 		## GENERATE EVENT SUMMARIES
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tScanning for Evidence pertaining to {event.title}")
+		if output["new_events"]: print(f"\n\t\t\tScanning for Evidence pertaining to '{event.title}'")
 
 
 		# Get current evidence
@@ -459,19 +464,20 @@ def archive_events(new_events):
 			evidence_list.append(check_files_for_id(files=evidence_files,id=id))
 
 		# Optional Output
-		if output["new_events_plus"]: print(f"\t\t\tEvidence List Generated")
+		if output["new_events_plus"]: print(f"\t\t\tEvidence List Generated Successfully")
 
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tScanning {event.title} for Data Archive")
+		if output["new_events"]: print(f"\n\t\t\tCreating Media Archive for '{event.title}'")
 
 
+		# Workspace
+		
 
-		# Look for archive folder
-			# If there, update accordingly
-			# Otherwise, create it
-		# Move evidence into archive by MIME Type
+
+		# Create Archive Folder - Events with existing archive folders are classified as complete so validating the folder is not necessary
 		# Add a link to the current event
+		# Move evidence into archive by MIME Type
 
 
 		# Optional Output
