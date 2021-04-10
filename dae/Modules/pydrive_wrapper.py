@@ -35,13 +35,15 @@ def create_drive_folder(id=None, title=None):
 
 # Move Drive File
 def move_drive_file(file_id=None, parent_id=None):
-  file1 = drive.CreateFile({'id': file_id})
-  file1['parents'] = [{
-    "kind": "drive#parentReference",
-    "id": parent_id
-    }]
-  file1.Upload()
-  return file1["parents"]
+  files = drive.auth.service.files()
+  file  = files.get(fileId= file_id, fields= 'parents').execute()
+  prev_parents = ','.join(p['id'] for p in file.get('parents'))
+  file  = files.update( fileId = file_id,
+                        addParents = parent_id,
+                        removeParents = prev_parents,
+                        fields = 'id, parents',
+                        ).execute()
+  return file["parents"]
 
 
 
