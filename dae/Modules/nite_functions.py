@@ -531,6 +531,18 @@ def archive_events(new_events):
 		# Optional Output
 		if output["new_events"]: print(f"""Event Archived Successfully\n""")
 
+		# Optional Output
+		if output["new_events"]: print(f"""\n\n\nGenerating Summary Documents...\n""")
+
+		# Workspace
+		# Generate Gif Files
+		# Generate Summary Document
+		# Add Gif
+		# Add Text
+		# Add Video
+		# Add Audio
+		
+
 
 	# Non-Optional Output
 	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
