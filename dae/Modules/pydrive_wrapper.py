@@ -22,6 +22,19 @@ drive = GoogleDrive(gauth)
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
+# Download Drive Files from Directory
+def download_drive_dir_files(id=None):
+  file_list = list_drive_directory(id)
+  for i, file1 in enumerate(sorted(file_list, key = lambda x: x['title']), start=1):
+      print('Downloading {} from GDrive ({}/{})'.format(file1['title'], i, len(file_list)))
+      file1.GetContentFile(file1['title'])  
+
+
+# List Drive Directory
+def list_drive_directory(id=None):
+  return query_drive(f"'{id}' in parents")
+
+
 # Create Drive Folder
 def create_drive_folder(id=None, title=None):
   file1 = drive.CreateFile({

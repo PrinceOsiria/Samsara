@@ -463,6 +463,7 @@ def archive_events(new_events):
 			id = link.split("open?id=")[1]
 			evidence_list.append(check_files_for_id(files=evidence_files,id=id))
 
+
 		# Optional Output
 		if output["new_events_plus"]: print(f"\t\t\tEvidence List Generated Successfully")
 
@@ -489,44 +490,44 @@ def archive_events(new_events):
 
 		# Move evidence into archive by MIME Type
 		for file in evidence_list:
-
-			file_title = file['title']			
-			file_mimeType = file['mimeType'].split("/")[0]
-			file_id = file['id']
-
-			# Optional Output
-			if output["new_events_plus"]: print(f"\n\tFILE TITLE: {file_title}\n\tFILE MIME {file_mimeType}\n\tFILE ID: {file_id}")
-			
-			# Image Files
-			if file_mimeType == "image":
+			if file:
+				file_title = file['title']			
+				file_mimeType = file['mimeType'].split("/")[0]
+				file_id = file['id']
 
 				# Optional Output
-				if output["new_events_plus"]: print(f"Image File '{file_title}' being moved...")
+				if output["new_events_plus"]: print(f"\n\tFILE TITLE: {file_title}\n\tFILE MIME {file_mimeType}\n\tFILE ID: {file_id}")
+				
+				# Image Files
+				if file_mimeType == "image":
 
-				# Move File into Folder
-				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
-				print(parents)
+					# Optional Output
+					if output["new_events_plus"]: print(f"Image File '{file_title}' being moved...")
 
-				# Video Files
-			if file_mimeType == "video":
+					# Move File into Folder
+					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
+					print(parents)
 
-				# Optional Output
-				if output["new_events_plus"]: print(f"Video File '{file_title}' being moved...")
+					# Video Files
+				if file_mimeType == "video":
 
-				# Move File into Folder
-				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
-				print(parents)
-			# Audio Files
-			if file_mimeType == "audio":
+					# Optional Output
+					if output["new_events_plus"]: print(f"Video File '{file_title}' being moved...")
 
-				# Optional Output
-				if output["new_events_plus"]: print(f"Audio File '{file_title}' being moved...")
+					# Move File into Folder
+					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
+					print(parents)
+				# Audio Files
+				if file_mimeType == "audio":
 
-				# Move File into Folder
-				parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
-				print(parents)
-			# Text Files
-				# Generate text file from event description
+					# Optional Output
+					if output["new_events_plus"]: print(f"Audio File '{file_title}' being moved...")
+
+					# Move File into Folder
+					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
+					print(parents)
+				# Text Files
+					# Generate text file from event description
 
 		# Optional Output
 		if output["new_events"]: print(f"""Event Archived Successfully\n""")
@@ -536,6 +537,40 @@ def archive_events(new_events):
 
 		# Workspace
 		# Generate Gif Files
+
+		# Optional Output
+		if output["new_events"]: print(f"\tBot Workspace\n\t\t{bot_workspace_location}")
+
+		# Optional Output
+		if output["new_events_plus"]: print(f"\tWorkspace is being cleaned...")
+			
+		# if list files, for each file, remove the file
+		workspace_files = os.listdir(bot_workspace_location)
+		if workspace_files:
+			for file in workspace_files:
+				os.remove(file) 
+
+		#Download Images to Workspace
+		os.chdir(bot_workspace_location)
+		  drive_download_dir_files(id=event.drive_archive_image_folder_id)
+
+		# Scan for Image List
+		images = list(bot_workspace_location.glob('*.png'))
+		image_list = []
+
+		# Optional Output
+		if output["new_events"]: print(f"\tImages Detected:\n\t\t{images}\n\tGenerating Gif...")
+
+		# Generate image list
+		for file_name in images:
+		    image_list.append(imageio.imread(file_name))
+
+		# Generate Gif
+		imageio.mimwrite('animated_from_images.gif', image_list)
+
+		# Optional Output
+		if output["new_events"]: print(f"\tGif Generation Successful")
+
 		# Generate Summary Document
 		# Add Gif
 		# Add Text
