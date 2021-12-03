@@ -1,0 +1,5 @@
+Remove broken code and any cloud-acting code
+Retrieve cloud data
+Reconfigure code (config) to use a different source drive account
+Test Test Test
+Reassess
