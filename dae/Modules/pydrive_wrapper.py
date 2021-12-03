@@ -91,6 +91,8 @@ def get_titles_from_fileList(fileList):
     if file["title"]:
       titles.append(file["title"])
   return titles
+
+  
 # Get file id
 def get_ids_from_fileList(fileList):
   titles = []
@@ -98,7 +100,8 @@ def get_ids_from_fileList(fileList):
     if file["id"]:
       titles.append(file["id"])
   return titles
-# Get file mime
+
+  # Get file mime
 def get_mimes_from_fileList(fileList):
   titles = []
   for file in fileList:

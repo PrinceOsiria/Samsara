@@ -5,7 +5,7 @@
 command_prefix = "!"
 
 # Output options
-selected_output_option = "all_true"
+selected_output_option = "minimal_med"
 
 # Drive Filesystem Configuration
 root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
@@ -21,9 +21,9 @@ output_options = dict(
 	custom = dict(
 			cleanup_sequence = True,
 			dirty_current_events = False,
-			cleaner_actions = True,
+			cleaner_actions = False,
 			clean_current_events = False,
-			event_internalization = False,
+			event_internalization = True,
 			database_update = True,
 			new_events = True,
 			new_events_plus = True,

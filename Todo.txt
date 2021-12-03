@@ -1,5 +1,57 @@
-Remove broken code and any cloud-acting code
-Retrieve cloud data
-Reconfigure code (config) to use a different source drive account
-Test Test Test
-Reassess
+Code is in working order, however event descriptions are not being added to drive - this needs fixed first
+Once events are properly archiving into drive, outline and begin io testing
+If any bugs are found, fix them, otherwise, proceed
+
+Slow down bot loop
+Produce a working module for each mimetype
+Import modules to Samsara
+
+\/
+
+textfile generation:
+
+
+Research text file creation
+do it
+put it in a module
+add to samsara
+upload to proper directory upon creation (during mime folder creation) and delete once finished
+add location in drive to db
+
+
+audio reading generation:
+same as above
+
+
+gif Generation: - must first create voice synthesis module as gif length is dictated by audio clip duration
+
+Download images to a tmp directory
+compile images into a gif
+upload gif to source dir
+store location of gif in db under the relevant event
+clear tmp directory
+
+
+
+
+Video Generation:
+
+Take variate number of video clips and string them together, output the result and follow the same process as outlined above
+
+
+
+Summary Document Generation: - this part is tricky
+
+2 pages only
+First page contains gif alongside standardized linking and the event's description
+Second page is also standardized and also contains video and audio (embedded)
+Due to need to embed media files, it is necessary to research the restrictions - I believe trawling through gdocs api will eventually work
+Same as above
+
+
+Once summary documents are generated, they must be linked into a table of contents system automatically
+
+
+Begin work on discord querying and data presentation
+
+Assess video generation
