@@ -535,50 +535,6 @@ def archive_events(new_events):
 		# Optional Output
 		if output["new_events"]: print(f"""\n\n\nGenerating Summary Documents...\n""")
 
-		# Workspace
-		# Generate Gif Files
-
-		# Optional Output
-		if output["new_events"]: print(f"\tBot Workspace\n\t\t{bot_workspace_location}")
-
-		# Optional Output
-		if output["new_events_plus"]: print(f"\tWorkspace is being cleaned...")
-			
-		# if list files, for each file, remove the file
-		workspace_files = os.listdir(bot_workspace_location)
-		if workspace_files:
-			for file in workspace_files:
-				os.remove(file) 
-
-		#Download Images to Workspace
-		os.chdir(bot_workspace_location)
-		  drive_download_dir_files(id=event.drive_archive_image_folder_id)
-
-		# Scan for Image List
-		images = list(bot_workspace_location.glob('*.png'))
-		image_list = []
-
-		# Optional Output
-		if output["new_events"]: print(f"\tImages Detected:\n\t\t{images}\n\tGenerating Gif...")
-
-		# Generate image list
-		for file_name in images:
-		    image_list.append(imageio.imread(file_name))
-
-		# Generate Gif
-		imageio.mimwrite('animated_from_images.gif', image_list)
-
-		# Optional Output
-		if output["new_events"]: print(f"\tGif Generation Successful")
-
-		# Generate Summary Document
-		# Add Gif
-		# Add Text
-		# Add Video
-		# Add Audio
-		
-
-
 	# Non-Optional Output
 	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
 
