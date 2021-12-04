@@ -198,6 +198,26 @@ def scan_drive(root_folder_id = root_folder_id):
 	if output: print(f"""\nDRIVE SUCCESSFULLY SCANNED\n#####################################################\n""")
 
 
+# Validate Cloud Integrity
+def validate_cloud_integrity():
+
+	# Variables
+	status_of_cloud_files = "UNKNOWN"
+
+	# Output
+	if output: print(f"""\n#####################################################\nVALIDATING CLOUD INTEGRITY\n""")
+
+	#For year in db
+
+
+	# Optional Output
+	if output["cloud_integrity_check"]: print(f"\n\nCloud Status: {status_of_cloud_files}")
+
+	# Output
+	if output: print(f"""\nCLOUD INTEGRITY CHECK COMPLETED\n#####################################################\n""")
+
+
+
 # Validate Database
 def identify_new_events():
 	

@@ -23,9 +23,10 @@ async def samsara():
 Codename Samsara is: ONLINE
 """)
 
-	# Initialization and Validation
+	# Initialization and Validation - N.I.T.E.
 	initiate_automated_cleanup()
 	scan_drive()
+	validate_cloud_integrity()
 
 	# D.A.E.
 	update_database(get_current_events())

@@ -28,7 +28,8 @@ output_options = dict(
 			new_events = True,
 			new_events_plus = True,
 			new_events_more = False,
-			drive_scan = True
+			drive_scan = True,
+			cloud_integrity_check = True
 	),
 
 	minimal_med = dict(
@@ -41,7 +42,8 @@ output_options = dict(
 			new_events = True,
 			new_events_plus = False,
 			new_events_more = False,
-			drive_scan = True
+			drive_scan = True,
+			cloud_integrity_check = True
 	),
 
 	minimal_max = dict(
@@ -54,7 +56,8 @@ output_options = dict(
 			new_events = True,
 			new_events_plus = True,
 			new_events_more = False,
-			drive_scan = True
+			drive_scan = True,
+			cloud_integrity_check = True
 	),
 
 	all_false = dict(
@@ -66,8 +69,9 @@ output_options = dict(
 			database_update = False,
 			new_events = False,
 			new_events_plus = False,
-			new_events_more = False,
-			drive_scan = False
+			new_events_more = True,
+			drive_scan = False,
+			cloud_integrity_check = False
 	),
 
 	all_true = dict(
@@ -80,6 +84,7 @@ output_options = dict(
 			new_events = True,
 			new_events_plus = True,
 			new_events_more = True,
-			drive_scan = True
+			drive_scan = True,
+			cloud_integrity_check = True
 	)
 )
