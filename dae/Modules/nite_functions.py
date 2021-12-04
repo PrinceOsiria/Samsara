@@ -275,7 +275,7 @@ def archive_events(new_events):
 				folder_id = year_exists_on_drive["id"]
 
 				# Optional Output
-				if output["new_events_plus"]: print(f"\t\t\tThe Year '{year}' was found on drive with ID: {folder_id}\n\t\t\t{year} has been added to the Internal Database.")
+				if output["new_events_plus"]: print(f"\t\t\tThe Year '{year}' was found on drive with ID: {folder_id}\n\t\t\tThe Year {year} has been added to the Internal Database.")
 
 				# Add Year to Database
 				add_to_db(Year(year=year, drive_folder_id=folder_id))
@@ -300,7 +300,7 @@ def archive_events(new_events):
 		year = session.query(Year).filter_by(year=year).first()
 
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tThe Year '{year.year}' Was Successfully Archived")
+		if output["new_events"]: print(f"\t\t\tThe Year '{year.year}' Was Successfully Archived\n")
 
 
 
@@ -324,7 +324,7 @@ def archive_events(new_events):
 				folder_id = month_exists_on_drive["id"]
 				
 				# Optional Output
-				if output["new_events_plus"]: print(f"\t\t\tThe Month {month} was found on drive with ID: {folder_id}\n\t\t\t{month} has been added to the Internal Database.")
+				if output["new_events_plus"]: print(f"\t\t\tThe Month {month} was found on drive with ID: {folder_id}\n\t\t\tThe Month {month} has been added to the Internal Database.")
 
 				# Add Month to Database
 				add_to_db(Month(month=month, drive_folder_id=folder_id, year_id=year.drive_folder_id))
@@ -346,7 +346,7 @@ def archive_events(new_events):
 		month = session.query(Month).filter_by(month=month, year_id=year.drive_folder_id).first()
 		
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tThe Month {month.month} was Successfully Archived")
+		if output["new_events"]: print(f"\t\t\tThe Month {month.month} was Successfully Archived\n")
 
 
 
@@ -370,7 +370,7 @@ def archive_events(new_events):
 				folder_id = day_exists_on_drive["id"]
 
 				# Optional Output
-				if output["new_events_plus"]: print(f"\t\t\tThe Day {day} was found on drive with ID: {folder_id}\n\t\t\t{day} has been added to the Internal Database.")
+				if output["new_events_plus"]: print(f"\t\t\tThe Day {day} was found on drive with ID: {folder_id}\n\t\t\tThe Day {day} has been added to the Internal Database.")
 
 				# Add Day to Database
 				add_to_db(Day(day=day, drive_folder_id=folder_id, month_id=month.drive_folder_id, year_id=year.drive_folder_id))
@@ -397,9 +397,9 @@ def archive_events(new_events):
 
 
 		# Optional Output
-		if output["new_events_plus"]: print(f"\t\tYear:\n\t\t\t{year}\n")
-		if output["new_events_plus"]: print(f"\t\tMonth:\n\t\t\t{month}\n")
-		if output["new_events_plus"]: print(f"\t\tDay:\n\t\t\t{day}\n")
+		if output["new_events_more"]: print(f"\t\tYear:\n\t\t\t{year}\n")
+		if output["new_events_more"]: print(f"\t\tMonth:\n\t\t\t{month}\n")
+		if output["new_events_more"]: print(f"\t\tDay:\n\t\t\t{day}\n")
 
 
 
@@ -443,14 +443,14 @@ def archive_events(new_events):
 		event = session.query(Event).filter_by(title=title, day_id=day.drive_folder_id, month_id=month.drive_folder_id, year_id=year.drive_folder_id).first()
 
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tThe Event '{title}' was Successfully Archived")
+		if output["new_events"]: print(f"\t\t\tThe Event '{title}' was Successfully Archived\n")
 
 
 
 		## GENERATE EVENT SUMMARIES
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tScanning for Evidence pertaining to '{event.title}'")
+		if output["new_events"]: print(f"\t\t\tScanning for Evidence pertaining to '{event.title}'")
 
 
 		# Get current evidence
@@ -469,7 +469,7 @@ def archive_events(new_events):
 
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tCreating Archive Folder for '{event.title}'")
+		if output["new_events"]: print(f"\t\t\tCreating Archive Folder for '{event.title}'")
 
 		# Create and Internalize the archive folder
 		event.drive_archive_folder_id = create_drive_folder(id=event.drive_event_folder_id, title="Archive")
@@ -486,7 +486,7 @@ def archive_events(new_events):
 		if output["new_events_plus"]: print(f"\t\t\tArchive folder created with id: '{event.drive_archive_folder_id}'")
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\t\t\tMoving Evidence into Event Archive")
+		if output["new_events"]: print(f"\t\t\tMoving Evidence into Event Archive")
 
 		# Move evidence into archive by MIME Type
 		for file in evidence_list:
@@ -496,60 +496,66 @@ def archive_events(new_events):
 				file_id = file['id']
 
 				# Optional Output
-				if output["new_events_plus"]: print(f"\n\tFILE TITLE: {file_title}\n\tFILE MIME {file_mimeType}\n\tFILE ID: {file_id}")
+				if output["new_events_plus"]: print(f"\n\tFILE TITLE: {file_title}\n\tFILE MIME: {file_mimeType}\n\tFILE ID: {file_id}")
 				
 				# Image Files
 				if file_mimeType == "image":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Image file '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"\nImage file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
-					print(parents)
+					
+					#Optional Output
+					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
 
 				# Video Files
 				if file_mimeType == "video":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Video file '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"\nVideo file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
-					print(parents)
+					
+					#Optional Output
+					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
 
 				# Audio Files
 				if file_mimeType == "audio":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Audio file '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"\nAudio file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
-					print(parents)
+					
+					#Optional Output
+					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
 				
 
 
 ##### WORKSPACE
 
 		# Text Files - Optional Output
-		if output["new_events"]: print(f"\n\nText file \"'{event.title}' Text Summary.txt\" being generated...")
+		if output["new_events"]: print(f"\n\n\tText file \"{event.title} - Text Summary.txt\" being generated...")
 		
 		#Optional Output
-		if output["new_events_plus"]: print(f"\n\t\tEvent Summary:\n\t'{event.summary}'")
+		if output["new_events_plus"]: print(f"\n\t\tEvent Summary:\n\t\t\t'{event.summary}'")
 
 		#Optional Output
-		if output["new_events_plus"]: print(f"\n\t\tText File Target Location:\n\t'{event.drive_archive_text_folder_id}'")
+		if output["new_events_plus"]: print(f"\n\t\tText File Target Location:\n\t\t\t'{event.drive_archive_text_folder_id}'")
 
 
 
 
 
 		# Optional Output
-		if output["new_events"]: print(f"""Event Archived Successfully\n""")
+		if output["new_events"]: print(f"\n\nEvent Archived Successfully\n")
 
 		# Optional Output
-		if output["new_events"]: print(f"""\n\n\nCompiling Media Files...\n""")
+		if output["new_events"]: print(f"\n\n\nCompiling Media Files...\n")
 
 	# Non-Optional Output
 	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")

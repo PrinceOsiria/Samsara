@@ -27,6 +27,7 @@ output_options = dict(
 			database_update = True,
 			new_events = True,
 			new_events_plus = True,
+			new_events_more = False,
 			drive_scan = True
 	),
 
@@ -39,6 +40,7 @@ output_options = dict(
 			database_update = True,
 			new_events = True,
 			new_events_plus = False,
+			new_events_more = False,
 			drive_scan = True
 	),
 
@@ -51,6 +53,7 @@ output_options = dict(
 			database_update = True,
 			new_events = True,
 			new_events_plus = True,
+			new_events_more = False,
 			drive_scan = True
 	),
 
@@ -63,6 +66,7 @@ output_options = dict(
 			database_update = False,
 			new_events = False,
 			new_events_plus = False,
+			new_events_more = False,
 			drive_scan = False
 	),
 
@@ -75,6 +79,7 @@ output_options = dict(
 			database_update = True,
 			new_events = True,
 			new_events_plus = True,
+			new_events_more = True,
 			drive_scan = True
 	)
 )

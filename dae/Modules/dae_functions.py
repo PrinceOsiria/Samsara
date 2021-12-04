@@ -79,9 +79,6 @@ def get_current_events():
           {current_events}
       """)
 
-    # Optional output
-    if output["event_internalization"]: print(f"Event of length {len(event)} is being Scanned . . . ")
-
     # If the event is formatted correctly, internalize it
     if len(event) == 4:
       ## Variable Initialization
@@ -106,7 +103,7 @@ def get_current_events():
       # Optional Output
       if output["event_internalization"]:
         print(f"""
-            ["{title}"] Was Internalized
+            {title} Was Scanned Correctly
 
               -- META --
                 Archived on: {archived_on}
@@ -126,7 +123,7 @@ def get_current_events():
       internalized_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
 
       # Optional output
-      if output["event_internalization"]: print(f"Event of length {len(event)} Scanned successfully . . . ")
+      if output["event_internalization"]: print(f"{title} Internalized Successfully . . . ")
     
 
     elif output["event_internalization"]: print(f"Incorrect Formatting: {event}")
