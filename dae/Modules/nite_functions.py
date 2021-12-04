@@ -411,11 +411,17 @@ def archive_events(new_events):
 		if event_exists_on_drive:
 
 			# Optional Output
-			if output["new_events_plus"]: print(f"\t\t\tThe Event '{title}' was found on drive with ID: {event_exists_on_drive['id']}")
+			if output["new_events_plus"]: print(f"\t\t\tThe Event '{title}' was found on drive with ID: {event_exists_on_drive['id']}\n\t\t\tDeleting Old Event...")
+
+			# Trash the old event
+			delete_drive_folder(id=event_exists_on_drive['id'])
+
+			#Optional Output
+			if output["new_events_plus"]: print(f"\t\t\tOld Event Deleted Successfully. \n\t\t\tCreating New Event...")
 
 			# Add Event to Database
 			event.title=title 
-			event.drive_event_folder_id=event_exists_on_drive["id"]
+			event.drive_event_folder_id=create_drive_folder(id=day.drive_folder_id, title=title)
 			event.day_id=day.drive_folder_id
 			event.month_id=month.drive_folder_id
 			event.year_id=year.drive_folder_id
@@ -465,11 +471,11 @@ def archive_events(new_events):
 
 
 		# Optional Output
-		if output["new_events_plus"]: print(f"\t\t\tEvidence List Generated Successfully")
-
+		if output["new_events_plus"] and (len(evidence_list) > 0): print(f"\t\t\tEvidence List Generated Successfully")
+		elif output["new_events_plus"]: print(f"\t\t\tWARNING: Evidence List Failed to Generate")
 
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tCreating Archive Folder for '{event.title}'")
+		if output["new_events"]: print(f"\n\t\t\tCreating Archive Folder for '{event.title}'")
 
 		# Create and Internalize the archive folder
 		event.drive_archive_folder_id = create_drive_folder(id=event.drive_event_folder_id, title="Archive")
@@ -486,7 +492,7 @@ def archive_events(new_events):
 		if output["new_events_plus"]: print(f"\t\t\tArchive folder created with id: '{event.drive_archive_folder_id}'")
 
 		# Optional Output
-		if output["new_events"]: print(f"\t\t\tMoving Evidence into Event Archive")
+		if output["new_events"]: print(f"\n\t\t\tMoving Evidence into Event Archive")
 
 		# Move evidence into archive by MIME Type
 		for file in evidence_list:

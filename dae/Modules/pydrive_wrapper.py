@@ -46,6 +46,18 @@ def create_drive_folder(id=None, title=None):
   return file1["id"]
 
 
+# Trash Drive Folder
+def trash_drive_folder(id=None):
+  file1 = drive.CreateFile({'id':id})
+  file1.Trash()
+
+
+# Delete Drive Folder
+def delete_drive_folder(id=None):
+  file1 = drive.CreateFile({'id':id})
+  file1.Delete()
+
+
 # Move Drive File
 def move_drive_file(file_id=None, parent_id=None):
   files = drive.auth.service.files()
