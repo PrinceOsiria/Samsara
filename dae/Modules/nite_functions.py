@@ -502,38 +502,54 @@ def archive_events(new_events):
 				if file_mimeType == "image":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Image File '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"Image file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
 					print(parents)
 
-					# Video Files
+				# Video Files
 				if file_mimeType == "video":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Video File '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"Video file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
 					print(parents)
+
 				# Audio Files
 				if file_mimeType == "audio":
 
 					# Optional Output
-					if output["new_events_plus"]: print(f"Audio File '{file_title}' being moved...")
+					if output["new_events_plus"]: print(f"Audio file '{file_title}' being moved...")
 
 					# Move File into Folder
 					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
 					print(parents)
-				# Text Files
-					# Generate text file from event description
+				
+
+
+##### WORKSPACE
+
+		# Text Files - Optional Output
+		if output["new_events"]: print(f"\n\nText file \"'{event.title}' Text Summary.txt\" being generated...")
+		
+		#Optional Output
+		if output["new_events_plus"]: print(f"\n\t\tEvent Summary:\n\t'{event.summary}'")
+
+		#Optional Output
+		if output["new_events_plus"]: print(f"\n\t\tText File Target Location:\n\t'{event.drive_archive_text_folder_id}'")
+
+
+
+
 
 		# Optional Output
 		if output["new_events"]: print(f"""Event Archived Successfully\n""")
 
 		# Optional Output
-		if output["new_events"]: print(f"""\n\n\nGenerating Summary Documents...\n""")
+		if output["new_events"]: print(f"""\n\n\nCompiling Media Files...\n""")
 
 	# Non-Optional Output
 	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")

@@ -1,4 +1,7 @@
 Code is in working order, however event descriptions are not being added to drive - this needs fixed first
+
+Media files are appearing in the root dir? 
+
 Once events are properly archiving into drive, outline and begin io testing
 If any bugs are found, fix them, otherwise, proceed
 

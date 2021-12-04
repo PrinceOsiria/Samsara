@@ -107,6 +107,13 @@ class Event(Base):
 	drive_archive_video_folder_id = Column(String())
 	drive_archive_audio_folder_id = Column(String())
 
+	# Formatted Media Files
+	event_summary_file = Column(String())
+	event_gif_file = Column(String())
+	event_video_file = Column(String())
+	event_audio_file = Column(String())
+
+
 	# Meta Information
 	archived_on = Column(String())
 	archived_by = Column(String())

@@ -5,7 +5,7 @@
 command_prefix = "!"
 
 # Output options
-selected_output_option = "minimal_med"
+selected_output_option = "custom"
 
 # Drive Filesystem Configuration
 root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
