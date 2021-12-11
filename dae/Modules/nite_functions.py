@@ -200,22 +200,116 @@ def scan_drive(root_folder_id = root_folder_id):
 
 # Validate Cloud Integrity
 def validate_cloud_integrity():
-
-	# Variables
-	status_of_cloud_files = "UNKNOWN"
-
-	# Output
+	# Non-Optional Output
 	if output: print(f"""\n#####################################################\nVALIDATING CLOUD INTEGRITY\n""")
 
-	#For year in db
+	# Variables
+	archive_folder_id = session.query(Drive).first().archive_folder_id
+	status_of_cloud_files = "100%"
 
+	##### WORKSPACE
+	for event in session.query(Event).all():
+		print(f"\n\nValidating Event: {event.title}\n\tYear Folder ID: {event.year_id}\n\tMonth Folder ID: {event.month_id}\n\tDay Folder ID: {event.day_id}\n\tEvent Folder ID: {event.drive_event_folder_id}\n\tArchive Folder ID: {event.drive_archive_folder_id}")
+		
+		# Check archive folder for the expected year folder
+		year_exists_on_drive = check_files_for_id(files=list_drive_directory(id=archive_folder_id), id=event.year_id)
+
+		if year_exists_on_drive:
+
+			# Optional Output
+			if output["cloud_integrity_check"]: print(f"{event.year} Validated Successfully")
+
+			# Check year folder for the expected month folder
+			month_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.year_id), id=event.month_id)
+
+			if month_exists_on_drive:
+
+				# Optional Output
+				if output["cloud_integrity_check"]: print(f"{event.month} Validated Successfully")
+
+				# Check month folder for the expected day folder
+				day_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.month_id),id=event.day_id)
+
+				if day_exists_on_drive:
+
+
+					# Optional Output
+					if output["cloud_integrity_check"]: print(f"{event.day} Validated Successfully")
+
+					#Check day folder for the expected event folder
+					event_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.day_id),id=event.drive_event_folder_id)
+
+					if event_exists_on_drive:
+
+						# Optional Output
+						if output["cloud_integrity_check"]: print(f"{event.title} Validated Successfully")
+
+						archive_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_event_folder_id),id=event.drive_archive_folder_id)
+
+						if archive_folder_exists_on_drive:
+
+							# Optional Output
+							if output["cloud_integrity_check"]: print(f"{event.title} Has an archive folder")
+
+
+							# CONFIRM SUMMARY DOCUMENTS AT A LATER TIME - IF MISSING, RECONSTRUCT EVENT
+
+						# ARCHIVE MISSING - Reconstruction Required
+						else:
+
+							# Optional Output
+							if output["cloud_integrity_check"]: print(f"WARNING: {event.title} IS CORRUPTED")
+
+							status_of_cloud_files = "Compromised - Attempting to Fix"
+
+					# EVENT DELETED - Reconstruction Required
+					else:
+
+						# Optional Output
+						if output["cloud_integrity_check"]: print(f"WARNING: {event.title} COULD NOT BE LOCATED")
+
+						status_of_cloud_files = "Compromised - Attempting to Fix"
+
+				# DAY DELETED - Surgery Required
+				else:
+
+					# Optional Output
+					if output["cloud_integrity_check"]: print(f"WARNING: {event.day} COULD NOT BE LOCATED")
+
+					status_of_cloud_files = "Compromised - Attempting to Fix"
+
+			# MONTH DELETED - Reconstructive surgery required
+			else:
+
+				# Optional Output
+				if output["cloud_integrity_check"]: print(f"WARNING: {event.month} COULD NOT BE LOCATED")
+
+				status_of_cloud_files = "Compromised - Attempting to Fix"
+
+
+		# YEAR DELETED - Massive reconstructive surgery required
+		else:
+
+			# Optional Output
+			if output["cloud_integrity_check"]: print(f"WARNING: {event.year} COULD NOT BE LOCATED")
+
+			status_of_cloud_files = "Compromised - Attempting to Fix"
+
+			# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
+			# Delete months of missing year
+			# Delete days of months of missing year
+			# Delete the year entry
+
+
+	# if anything not in archive, status = Partial - Applying Patch
+	# delete db entry (for y/m/d) and always delete the archive folder id - this forces the event to be re-generated later-on
+	#else status = Complete
 
 	# Optional Output
 	if output["cloud_integrity_check"]: print(f"\n\nCloud Status: {status_of_cloud_files}")
 
-	# Output
+	# Non-Optional Output
 	if output: print(f"""\nCLOUD INTEGRITY CHECK COMPLETED\n#####################################################\n""")
-
 
 
 # Validate Database

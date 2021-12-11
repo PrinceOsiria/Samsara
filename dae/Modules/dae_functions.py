@@ -7,7 +7,7 @@ from dae import *
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
-# Clean the root directory (Prevents errors is crashed/interrupted during last run)
+# Clean the root directory (Prevents errors if crashed/interrupted during last run)
 def initiate_automated_cleanup():
 
   # Non-Optional Output:

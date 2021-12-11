@@ -65,7 +65,7 @@ def move_drive_file(file_id=None, parent_id=None):
   prev_parents = ','.join(p['id'] for p in file.get('parents'))
   file  = files.update( fileId = file_id,
                         addParents = parent_id,
-                        removeParents = prev_parents,
+                        #removeParents = prev_parents, ##### THIS IS DISABLED TO ENABLE BACKUPS FOR MEDIA FILES
                         fields = 'id, parents',
                         ).execute()
   return file["parents"]
