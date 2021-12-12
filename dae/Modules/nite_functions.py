@@ -633,6 +633,7 @@ def archive_events(new_events):
 		# Optional Output
 		if output["new_events"]: print(f"\n\t\t\tMoving Evidence into Event Archive")
 
+
 		# Move evidence into archive by MIME Type
 		for file in evidence_list:
 			if file:
@@ -679,31 +680,42 @@ def archive_events(new_events):
 					#Optional Output
 					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 				
-
-
-##### WORKSPACE
-
 		# Text Files - Optional Output
 		if output["new_events"]: print(f"\n\n\tText file \"{event.title} - Text Summary.txt\" being generated...")
 		
 		#Optional Output
-		if output["new_events_plus"]: print(f"\n\t\tEvent Summary:\n\t\t\t'{event.summary}'")
+		if output["new_events_more"]: print(f"\n\t\tEvent Summary:\n\t\t\t'{event.summary}'")
 
 		#Optional Output
-		if output["new_events_plus"]: print(f"\n\t\tText File Target Location:\n\t\t\t'{event.drive_archive_text_folder_id}'")
-
+		if output["new_events_more"]: print(f"\n\t\tText File Target Location:\n\t\t\t'{event.drive_archive_text_folder_id}'")
 
 
 		# Generate Text File
 		insert_text_to_drive_document(id = create_drive_document(parent_id=event.drive_archive_text_folder_id, title="Text Summary.txt"), text=event.summary)
-
-
 
 		# Optional Output
 		if output["new_events"]: print(f"\n\nEvent Archived Successfully\n")
 
 		# Optional Output
 		if output["new_events"]: print(f"\n\n\nCompiling Media Files...\n")
+
+
+		##### WORKSPACE #####
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
 
 	# Non-Optional Output
 	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
