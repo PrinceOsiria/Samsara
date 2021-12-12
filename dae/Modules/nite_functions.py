@@ -242,14 +242,14 @@ def validate_cloud_integrity():
 					if event_exists_on_drive:
 
 						# Optional Output
-						if output["cloud_integrity_check"]: print(f"{event.title} Validated Successfully")
+						if output["cloud_integrity_check"]: print(f"\t{event.title} Has a Valid Event Folder")
 
 						archive_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_event_folder_id),id=event.drive_archive_folder_id)
 
 						if archive_folder_exists_on_drive:
 
 							# Optional Output
-							if output["cloud_integrity_check"]: print(f"{event.title} Has an archive folder")
+							if output["cloud_integrity_check"]: print(f"\t{event.title} Has a Valid Archive Folder")
 
 
 							# CONFIRM SUMMARY DOCUMENTS AT A LATER TIME - IF MISSING, RECONSTRUCT EVENT
@@ -258,57 +258,80 @@ def validate_cloud_integrity():
 						else:
 
 							# Optional Output
-							if output["cloud_integrity_check"]: print(f"WARNING: {event.title} IS CORRUPTED")
+							if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
 
 							status_of_cloud_files = "Compromised - Attempting to Fix"
+
+							# Set event.drive_archive_folder_id to null
+							event.drive_archive_folder_id = ""
 
 					# EVENT DELETED - Reconstruction Required
 					else:
 
 						# Optional Output
-						if output["cloud_integrity_check"]: print(f"WARNING: {event.title} COULD NOT BE LOCATED")
+						if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} COULD NOT BE LOCATED")
 
 						status_of_cloud_files = "Compromised - Attempting to Fix"
+
+						# Set event.drive_archive_folder_id to null
+						event.drive_archive_folder_id = ""
 
 				# DAY DELETED - Surgery Required
 				else:
 
 					# Optional Output
-					if output["cloud_integrity_check"]: print(f"WARNING: {event.day} COULD NOT BE LOCATED")
+					if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.day} COULD NOT BE LOCATED")
 
 					status_of_cloud_files = "Compromised - Attempting to Fix"
+
+					# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
+					event.drive_archive_folder_id = ""
+
+					# Delete broken entries
+					session.delete(event.day)
+					session.commit()
 
 			# MONTH DELETED - Reconstructive surgery required
 			else:
 
 				# Optional Output
-				if output["cloud_integrity_check"]: print(f"WARNING: {event.month} COULD NOT BE LOCATED")
+				if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.month} COULD NOT BE LOCATED")
 
 				status_of_cloud_files = "Compromised - Attempting to Fix"
+
+				# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
+				event.drive_archive_folder_id = ""
+
+				# Delete broken entries
+				for day in event.month.days:
+					session.delete(day)
+				session.delete(event.month)
+				session.commit()
 
 
 		# YEAR DELETED - Massive reconstructive surgery required
 		else:
 
 			# Optional Output
-			if output["cloud_integrity_check"]: print(f"WARNING: {event.year} COULD NOT BE LOCATED")
+			if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.year} COULD NOT BE LOCATED")
 
 			status_of_cloud_files = "Compromised - Attempting to Fix"
 
 			# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
-			event.drive_archive_folder_id = null
-			print(event.drive_archive_folder_id)
-			# Delete months of missing year
-			# Delete days of months of missing year
-			# Delete the year entry
+			event.drive_archive_folder_id = ""
 
+			# Delete broken entries
+			months = session.query(Month).all()
+			for month in event.year.months:
+				for day in month.days:
+					session.delete(day)
+				session.delete(month)
+			session.delete(event.year)
+			session.commit()
 
-	# if anything not in archive, status = Partial - Applying Patch
-	# delete db entry (for y/m/d) and always delete the archive folder id - this forces the event to be re-generated later-on
-	#else status = Complete
 
 	# Optional Output
-	if output["cloud_integrity_check"]: print(f"\n\nCloud Status: {status_of_cloud_files}")
+	if output["cloud_integrity_check"]: print(f"\nCloud Status: {status_of_cloud_files}")
 
 	# Non-Optional Output
 	if output: print(f"""\nCLOUD INTEGRITY CHECK COMPLETED\n#####################################################\n""")
