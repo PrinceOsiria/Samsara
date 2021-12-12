@@ -1,46 +1,7 @@
-Code is in working order, however event descriptions are not being added to drive - this needs fixed first
 
+Produce a working compilation/generation module for each mimetype
 
-Once events are properly archiving into drive, outline and begin io testing
-If any bugs are found, fix them, otherwise, proceed
-
-Slow down bot loop
-Produce a working module for each mimetype
 Import modules to Samsara
-
-\/
-
-textfile generation:
-
-
-Research text file creation
-do it
-put it in a module
-add to samsara
-upload to proper directory upon creation (during mime folder creation) and delete once finished
-add location in drive to db
-
-
-audio reading generation:
-same as above
-
-
-gif Generation: - must first create voice synthesis module as gif length is dictated by audio clip duration
-
-Download images to a tmp directory
-compile images into a gif
-upload gif to source dir
-store location of gif in db under the relevant event
-clear tmp directory
-
-
-
-
-Video Generation:
-
-Take variate number of video clips and string them together, output the result and follow the same process as outlined above
-
-
 
 Summary Document Generation: - this part is tricky
 
