@@ -694,6 +694,9 @@ def archive_events(new_events):
 
 
 
+		# Generate Text File
+		insert_text_to_drive_document(id = create_drive_document(parent_id=event.drive_archive_text_folder_id, title="Text Summary.txt"), text=event.summary)
+
 
 
 		# Optional Output

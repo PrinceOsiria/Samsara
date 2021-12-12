@@ -7,17 +7,20 @@ from dae.Config import private_key_location
 # Google Drive Access
 from pydrive.drive import GoogleDrive
 from pydrive.auth import GoogleAuth, ServiceAccountCredentials
+from googleapiclient.discovery import build
 import google.auth
+
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
 # Authentication
 gauth = GoogleAuth()
-scope = ['https://www.googleapis.com/auth/drive']
+scope = ['https://www.googleapis.com/auth/drive', 'https://www.googleapis.com/auth/documents']
 gauth.credentials = ServiceAccountCredentials.from_json_keyfile_name(private_key_location, scope)
+service = build('docs', 'v1', credentials=gauth.credentials)
 drive = GoogleDrive(gauth)
-
+docs = service.documents()
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
@@ -142,3 +145,38 @@ def query_drive(query):
     ids = get_ids_from_fileList(fileList),
     mimeTypes = get_mimes_from_fileList(fileList)
     )
+
+# Create Document
+def create_drive_document(title=None, parent_id=None):
+  file1 = drive.CreateFile({
+      'title': title, 
+      'parents': [{'id':parent_id}],
+      'mimeType': 'application/vnd.google-apps.document'
+  })
+  file1.Upload()
+  return file1["id"]
+  
+
+# Rename Document
+def rename_drive_document(id=None,title=None):
+  files = drive.auth.service.files()
+  file1 = files.get(fileId=id).execute()
+  file1['title'] = title
+  files.update(
+    fileId=id,
+    body=file1,
+    newRevision=True
+    ).execute()
+
+
+# Insert Text to Document
+def insert_text_to_drive_document(id=None, text=None, index=1):
+
+  content = [
+    {'insertText': {
+      'location': {'index': index},
+      'text':text}
+    }]
+
+  docs.batchUpdate(documentId=id,body={'requests': content}).execute()
+
