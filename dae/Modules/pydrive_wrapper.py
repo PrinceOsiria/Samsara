@@ -57,6 +57,18 @@ def delete_drive_folder(id=None):
   file1 = drive.CreateFile({'id':id})
   file1.Delete()
 
+# Copy Drive File
+def copy_drive_file(file_id=None, copy_title=None):
+  copied_file = {'title': copy_title}
+  file_data = drive.auth.service.files().copy(fileId=file_id, body=copied_file).execute()
+  return file_data['id']
+
+# Copy Drive File to Folder
+def copy_drive_file_to_folder(file_id=None, copy_title=None, parent_id=None):
+  copy_id = copy_drive_file(file_id=file_id,copy_title=copy_title)
+  move_drive_file(file_id=copy_id, parent_id=parent_id)
+  return copy_id
+
 
 # Move Drive File
 def move_drive_file(file_id=None, parent_id=None):
@@ -65,7 +77,7 @@ def move_drive_file(file_id=None, parent_id=None):
   prev_parents = ','.join(p['id'] for p in file.get('parents'))
   file  = files.update( fileId = file_id,
                         addParents = parent_id,
-                        #removeParents = prev_parents, ##### THIS IS DISABLED TO ENABLE BACKUPS FOR MEDIA FILES
+                        removeParents = prev_parents,
                         fields = 'id, parents',
                         ).execute()
   return file["parents"]

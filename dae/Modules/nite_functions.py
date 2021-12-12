@@ -296,6 +296,8 @@ def validate_cloud_integrity():
 			status_of_cloud_files = "Compromised - Attempting to Fix"
 
 			# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
+			event.drive_archive_folder_id = null
+			print(event.drive_archive_folder_id)
 			# Delete months of missing year
 			# Delete days of months of missing year
 			# Delete the year entry
@@ -624,11 +626,11 @@ def archive_events(new_events):
 					# Optional Output
 					if output["new_events_plus"]: print(f"\nImage file '{file_title}' being moved...")
 
-					# Move File into Folder
-					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_image_folder_id)
+					# Copy File into Folder
+					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_image_folder_id, copy_title=file_title)
 					
 					#Optional Output
-					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
+					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 
 				# Video Files
 				if file_mimeType == "video":
@@ -637,10 +639,10 @@ def archive_events(new_events):
 					if output["new_events_plus"]: print(f"\nVideo file '{file_title}' being moved...")
 
 					# Move File into Folder
-					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_video_folder_id)
+					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_video_folder_id, copy_title=file_title)
 					
 					#Optional Output
-					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
+					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 
 				# Audio Files
 				if file_mimeType == "audio":
@@ -649,10 +651,10 @@ def archive_events(new_events):
 					if output["new_events_plus"]: print(f"\nAudio file '{file_title}' being moved...")
 
 					# Move File into Folder
-					parents = move_drive_file(file_id=file_id, parent_id=event.drive_archive_audio_folder_id)
+					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_audio_folder_id, copy_title=file_title)
 					
 					#Optional Output
-					if output["new_events_more"]: print(f"\tFile Parent Folder: {parents}")
+					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 				
 
 
