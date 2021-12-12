@@ -1,29 +1,4 @@
-
-A potential bug has been discovered; if data on the cloud goes missing, the bot is unable to detect this, and therefore unable to correct itself
-
-
-
-For a patch to work properly, there needs to be a secondary security measure added - currently, events are copied into the database from "current events"
-This file is capable of deletion/corruption as well, and therefore, it would be wise to automate the creation of backups for current events 
-(This can be done at the end when video generation comes back up)
-
-The patch is not foolproof, as it will result in the files being replaced but without any evidence (it is likely that evidence files are also gone)
-This can be fixed in a few ways, but none are glamourous. This needs thought.
-
-As for the patch itself, once a drive scan has been completed, a scan of each event must be done.
-
-For every event, it's year, month, day, and event folder needs confirmed
-If anything is missing, a folder must be created and it's id updated anywhere it appears (it's sub-folders will all contain a link to it)
-If the event folder is missing, attempt to re-generate the folder with it's missing data - if not possible, append a warning and fix what can be fixed
-
-
-In the best case scenario, none of this will ever be utilized in the production code, however it is wise to have it implemented in the case of a bug:
-
-
-for example, a deleted entry that exists in the local db will be returned as-is if queried, which would be a dead link. This patch should at least provide working links, though evidence retention is uncertain
-
-
-Code is otherwise in working order, however event descriptions are not being added to drive - this needs fixed next
+Code is in working order, however event descriptions are not being added to drive - this needs fixed first
 
 
 Once events are properly archiving into drive, outline and begin io testing
