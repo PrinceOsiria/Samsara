@@ -42,3 +42,8 @@ All commands can be found at the link above
 
 Thanks for reading!
 Tyler Pryjda
+
+
+
+ADDITIONAL REQUIREMENTS:
+https://windowsloop.com/install-ffmpeg-windows-10/
