@@ -5,6 +5,8 @@
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.ext.mutable import MutableList
+from sqlalchemy import PickleType
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
@@ -106,6 +108,12 @@ class Event(Base):
 	drive_archive_text_folder_id = Column(String())
 	drive_archive_video_folder_id = Column(String())
 	drive_archive_audio_folder_id = Column(String())
+
+	# Source Evidence Files
+	drive_archive_image_files_id_list = Column(MutableList.as_mutable(PickleType),default=[])
+	drive_archive_video_files_id_list = Column(MutableList.as_mutable(PickleType),default=[])
+	drive_archive_audio_files_id_list = Column(MutableList.as_mutable(PickleType),default=[])
+	drive_archive_text_file_id = Column(String())
 
 	# Formatted Media Files
 	event_summary_file = Column(String())

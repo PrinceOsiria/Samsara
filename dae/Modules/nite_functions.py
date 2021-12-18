@@ -251,6 +251,97 @@ def validate_cloud_integrity():
 							# Optional Output
 							if output["cloud_integrity_check"]: print(f"\t{event.title} Has a Valid Archive Folder")
 
+							text_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_archive_folder_id), id=event.drive_archive_text_folder_id)
+							image_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_archive_folder_id), id=event.drive_archive_image_folder_id)
+							video_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_archive_folder_id), id=event.drive_archive_video_folder_id)
+							audio_folder_exists_on_drive = check_files_for_id(files=list_drive_directory(id=event.drive_archive_folder_id), id=event.drive_archive_audio_folder_id)
+							all_folders_exist_in_archive = text_folder_exists_on_drive and image_folder_exists_on_drive and video_folder_exists_on_drive and audio_folder_exists_on_drive
+							
+							if all_folders_exist_in_archive:
+
+								# Optional Output
+								if output["cloud_integrity_check"]: print(f"\tArchive Folder Contains Required Folders")
+								
+								# Check text file
+								text_file_exists = check_files_for_id(files=list_drive_directory(id=event.drive_archive_text_folder_id), id=event.drive_archive_text_file_id)
+
+								if text_file_exists:
+									# Optional Output
+									if output["cloud_integrity_check"]: print(f"\tText File Verified")
+									
+									# Check Image Folder for Known Files
+									for file in event.drive_archive_image_files_id_list:
+
+										#image_file_found = check_files_for_id(files=list_drive_directory(id=event.drive_archive_image_folder_id), id=file)
+										
+										if not check_files_for_id(files=list_drive_directory(id=event.drive_archive_image_folder_id), id=file):
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
+
+											status_of_cloud_files = "Compromised - Attempting to Fix"
+
+											# Set event.drive_archive_folder_id to null
+											event.drive_archive_folder_id = ""
+
+										else:
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\tImage Files Verified")
+
+
+									# Check Video Folder for Known Files
+									for file in event.drive_archive_video_files_id_list:
+										if not check_files_for_id(files=list_drive_directory(id=event.drive_archive_video_folder_id), id=file):
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
+
+											status_of_cloud_files = "Compromised - Attempting to Fix"
+
+											# Set event.drive_archive_folder_id to null
+											event.drive_archive_folder_id = ""
+
+										else:
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\tVideo Files Verified")
+
+
+									# Check Audio Folder for Known Files
+									for file in event.drive_archive_audio_files_id_list:
+										if not check_files_for_id(files=list_drive_directory(id=event.drive_archive_audio_folder_id), id=file):
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
+
+											status_of_cloud_files = "Compromised - Attempting to Fix"
+
+											# Set event.drive_archive_folder_id to null
+											event.drive_archive_folder_id = ""
+
+										else:
+											# Optional Output
+											if output["cloud_integrity_check"]: print(f"\t Audio Files Verified")
+											
+
+									# VERIFY FORMATTED MEDIA FILE LOCATIONS
+
+								# ARCHIVE CORRUPTED - Reconstruction Required
+								else:
+									# Optional Output
+									if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
+
+									status_of_cloud_files = "Compromised - Attempting to Fix"
+
+									# Set event.drive_archive_folder_id to null
+									event.drive_archive_folder_id = ""
+
+
+							# ARCHIVE CORRUPTED - Reconstruction Required
+							else:
+								# Optional Output
+								if output["cloud_integrity_check"]: print(f"\t\tWARNING: {event.title} IS CORRUPTED")
+
+								status_of_cloud_files = "Compromised - Attempting to Fix"
+
+								# Set event.drive_archive_folder_id to null
+								event.drive_archive_folder_id = ""
 
 							# CONFIRM SUMMARY DOCUMENTS AT A LATER TIME - IF MISSING, RECONSTRUCT EVENT
 
@@ -633,6 +724,10 @@ def archive_events(new_events):
 		# Optional Output
 		if output["new_events"]: print(f"\n\t\t\tMoving Evidence into Event Archive")
 
+		# Prepare evidence id collection (sorted by mimetype and stored in a mutablelist/pickletype)
+		image_evidence_id_list = []
+		video_evidence_id_list = []
+		audio_evidence_id_list = []
 
 		# Move evidence into archive by MIME Type
 		for file in evidence_list:
@@ -653,6 +748,9 @@ def archive_events(new_events):
 					# Copy File into Folder
 					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_image_folder_id, copy_title=file_title)
 					
+					# Collect Ids for validation
+					image_evidence_id_list.append(copy_id)
+
 					#Optional Output
 					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 
@@ -665,6 +763,9 @@ def archive_events(new_events):
 					# Move File into Folder
 					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_video_folder_id, copy_title=file_title)
 					
+					# Collect Ids for validation
+					video_evidence_id_list.append(copy_id)
+
 					#Optional Output
 					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
 
@@ -677,11 +778,19 @@ def archive_events(new_events):
 					# Move File into Folder
 					copy_id = copy_drive_file_to_folder(file_id=file_id, parent_id=event.drive_archive_audio_folder_id, copy_title=file_title)
 					
+					# Collect Ids for validation
+					audio_evidence_id_list.append(copy_id)
+
 					#Optional Output
 					if output["new_events_more"]: print(f"\tNew File ID: {copy_id}")
-				
+		
+		# Add Evidence ID Tags to database as a list
+		event.drive_archive_image_files_id_list = image_evidence_id_list
+		event.drive_archive_video_files_id_list = video_evidence_id_list
+		event.drive_archive_audio_files_id_list = audio_evidence_id_list
+
 		# Text Files - Optional Output
-		if output["new_events"]: print(f"\n\n\tText file \"{event.title} - Text Summary.txt\" being generated...")
+		if output["new_events"]: print(f"\n\nText file \"{event.title} - Text Summary.txt\" being generated...")
 		
 		#Optional Output
 		if output["new_events_more"]: print(f"\n\t\tEvent Summary:\n\t\t\t'{event.summary}'")
@@ -691,7 +800,10 @@ def archive_events(new_events):
 
 
 		# Generate Text File
-		insert_text_to_drive_document(id = create_drive_document(parent_id=event.drive_archive_text_folder_id, title="Text Summary.txt"), text=event.summary)
+		text_summary_id = create_drive_document(parent_id=event.drive_archive_text_folder_id, title="Text Summary.txt")
+		insert_text_to_drive_document(id = text_summary_id, text=event.summary)
+		event.drive_archive_text_file_id = text_summary_id
+		session.commit()
 
 		# Optional Output
 		if output["new_events"]: print(f"\n\nEvent Archived Successfully\n")
@@ -701,7 +813,6 @@ def archive_events(new_events):
 
 
 		##### WORKSPACE #####
-
 
 
 
