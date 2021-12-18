@@ -814,8 +814,28 @@ def archive_events(new_events):
 
 		##### WORKSPACE #####
 
+		# Download Required Files
+
+		# Generate Audio File
+
+		# Upload Audio File
+
+		# Update Database
+
+		# Generate Gif
+
+		# Upload Gif
+
+		# Update Database
+
+		# Generate Video File
+
+		# Upload Video File
+
+		# Update Database
 
 
+		##### WORKSPACE #####
 
 
 
