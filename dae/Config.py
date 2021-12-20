@@ -12,7 +12,7 @@ root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
 
 # Local Filesystem Configuration
 private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
-bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp"
+bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
 
 
 # Output Configurations

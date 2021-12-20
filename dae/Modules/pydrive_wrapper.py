@@ -2,7 +2,7 @@
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
 #Configuration
-from dae.Config import private_key_location
+from dae.Config import private_key_location, bot_workspace_location
 
 # Google Drive Access
 from pydrive.drive import GoogleDrive
@@ -26,11 +26,34 @@ docs = service.documents()
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
 # Download Drive Files from Directory
-def download_drive_dir_files(id=None):
-  file_list = list_drive_directory(id)
-  for i, file1 in enumerate(sorted(file_list, key = lambda x: x['title']), start=1):
-      print('Downloading {} from GDrive ({}/{})'.format(file1['title'], i, len(file_list)))
-      file1.GetContentFile(file1['title'])  
+def download_drive_dir_files(id=None, file_identifier="File Number"):
+
+	# Fetch Directory Contents
+  file_list = list_drive_directory(id=id)
+
+  # Internalize Directory Contents
+  titles = file_list['titles']
+  mimeTypes = file_list['mimeTypes']
+  ids = file_list['ids']
+
+
+	# Download Files
+  i= 0
+  for id in ids:
+    # Establish Filename
+    file_name = id + "." + mimeTypes[i].split('/')[1]
+
+    ##### DEBUG
+    print(file_name)
+
+    # Fetch Desired File
+    export = drive.CreateFile({'id':id})
+    print(f"Downloading {titles[i]} From Drive...")
+    
+    # Download the file and move on to the next one if there are any
+    export.GetContentFile(bot_workspace_location + file_name)
+    i+=1
+
 
 
 # List Drive Directory

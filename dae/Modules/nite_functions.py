@@ -439,7 +439,7 @@ def identify_new_events():
 
 	# Determine which events are new
 	for event in session.query(Event).all():
-		if not event.drive_archive_folder_id:
+		if not event.event_summary_file:
 			new_events.append(event)
 
 			# Optional Output
@@ -815,6 +815,9 @@ def archive_events(new_events):
 		##### WORKSPACE #####
 
 		# Download Required Files
+		download_drive_dir_files(id=event.drive_archive_image_folder_id)
+		download_drive_dir_files(id=event.drive_archive_video_folder_id)
+		download_drive_dir_files(id=event.drive_archive_audio_folder_id)
 
 		# Generate Audio File
 
