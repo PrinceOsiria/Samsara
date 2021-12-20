@@ -43,12 +43,9 @@ def download_drive_dir_files(id=None, file_identifier="File Number"):
     # Establish Filename
     file_name = id + "." + mimeTypes[i].split('/')[1]
 
-    ##### DEBUG
-    print(file_name)
-
     # Fetch Desired File
     export = drive.CreateFile({'id':id})
-    print(f"Downloading {titles[i]} From Drive...")
+    print(f"\nDownloading {titles[i]} From Drive...\n")
     
     # Download the file and move on to the next one if there are any
     export.GetContentFile(bot_workspace_location + file_name)
@@ -202,4 +199,17 @@ def insert_text_to_drive_document(id=None, text=None, index=1):
     }]
 
   docs.batchUpdate(documentId=id,body={'requests': content}).execute()
+
+
+# Upload Files
+def upload_file_to_drive(file=None, directory=None, parent_id=None, file_name=None):
+  file1 = drive.CreateFile({'title': file_name})
+  file1.SetContentFile(directory+file)
+  file1.Upload()
+  move_drive_file(file_id=file1['id'], parent_id=parent_id)
+  return file1['id']
+
+
+
+
 

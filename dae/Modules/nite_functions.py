@@ -806,10 +806,10 @@ def archive_events(new_events):
 		session.commit()
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\nEvent Archived Successfully\n")
+		if output["new_events"]: print(f"Event Archived Successfully\n")
 
 		# Optional Output
-		if output["new_events"]: print(f"\n\n\nCompiling Media Files...\n")
+		if output["new_events"]: print(f"Compiling Media Files...\n")
 
 
 		##### WORKSPACE #####
@@ -819,27 +819,126 @@ def archive_events(new_events):
 		download_drive_dir_files(id=event.drive_archive_video_folder_id)
 		download_drive_dir_files(id=event.drive_archive_audio_folder_id)
 
+		# Optional Output
+		if output["new_events"]: print(f"\nGenerating Audio Summary File...")
+
+		# Generate Audio Summary File
+		audio_summary_file = convert_text_to_audio_file(text=event.summary, directory=bot_workspace_location, file_name=event.drive_archive_text_file_id)
+
+		# Optional Output
+		if output["new_events"]: print(f"Uploading Audio Summary File...")
+
+		# Upload Audio Summary File
+		audio_summary_file_id = upload_file_to_drive(file=audio_summary_file, directory=bot_workspace_location, parent_id=event.drive_archive_audio_folder_id, file_name="Narrated Summary")
+
+		# Optional Output
+		if output["new_events"]: print(f"Updating Database...")
+
+		# Update Database
+		event.event_audio_summary_file = audio_summary_file_id
+		session.commit()
+
+
+		# Optional Output
+		if output["new_events"]: print(f"\nGenerating Gif File...")
+
+
+		# Prepare for Gif Generation
+		length = determine_length_of_audio_file(file=bot_workspace_location + audio_summary_file)
+
+		correct_files = []
+		for file in os.listdir(bot_workspace_location):
+			filename = file.split(".")[0]
+
+			if filename in image_evidence_id_list:
+				correct_files.append(file)
+
+		# Generate Gif File
+		if correct_files:
+			gif_file = generate_gif_file(directory=bot_workspace_location, files=correct_files, file_name="Gif of Image Evidence", length=length, length_delay=3000)
+
+			# Optional Output
+			if output["new_events"]: print(f"Uploading Gif Summary File...")
+
+			# Upload Gif File
+			gif_file_id = upload_file_to_drive(file=gif_file, directory=bot_workspace_location, parent_id=event.drive_archive_image_folder_id, file_name="Gif of Image Evidence.gif")
+
+			# Optional Output
+			if output["new_events"]: print(f"Updating Database...")
+
+			# Update Database
+			event.event_gif_file = gif_file_id
+			session.commit()
+
+
+		# Optional Output
+		if output["new_events"]: print(f"\nGenerating Audio File...")
+
+
+		# Prepare for Audio File Generation
+		correct_files = []
+		for file in os.listdir(bot_workspace_location):
+			filename = file.split(".")[0]
+
+			if filename in audio_evidence_id_list:
+				correct_files.append(file)
+
+		print(correct_files)
+
 		# Generate Audio File
+		if correct_files:
+			audio_file = compile_audio_files(files=correct_files, directory=bot_workspace_location, file_name="Audio Evidence Compilation.mp3")
 
-		# Upload Audio File
+			# Optional Output
+			if output["new_events"]: print(f"Uploading Audio File...")
 
-		# Update Database
+			# Upload Audio File
+			audio_file_id = upload_file_to_drive(file=audio_file, directory=bot_workspace_location, parent_id=event.drive_archive_audio_folder_id, file_name="Audio Evidence Compilation.mp3")
 
-		# Generate Gif
 
-		# Upload Gif
+			# Optional Output
+			if output["new_events"]: print(f"Updating Database...")
 
-		# Update Database
+			# Update Database
+			event.event_audio_file = audio_file_id
+			session.commit()
+
+
+		# Optional Output
+		if output["new_events"]: print(f"\nGenerating Video File...")
+
+		# Prepare for Video File Generation
+		correct_files = []
+		for file in os.listdir(bot_workspace_location):
+			filename = file.split(".")[0]
+
+			if filename in video_evidence_id_list:
+				correct_files.append(file)
+
 
 		# Generate Video File
+		if correct_files:
+			video_file = compile_video_files(files=correct_files, directory=bot_workspace_location, file_name="Video Evidence Compilation.mp4")
 
-		# Upload Video File
 
-		# Update Database
+			# Optional Output
+			if output["new_events"]: print(f"Uploading Video File...")
+
+
+			# Upload Video File
+			video_file_id = upload_file_to_drive(file=video_file, directory=bot_workspace_location, parent_id=event.drive_archive_video_folder_id, file_name="Video Evidence Compilation")
+
+
+			# Optional Output
+			if output["new_events"]: print(f"Updating Database...")
+
+			# Update Database
+			event.event_video_file = video_file_id
+			session.commit()
 
 
 		##### WORKSPACE #####
-
+		print("Oh yeah, baby")
 
 
 

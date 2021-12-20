@@ -17,11 +17,21 @@ def initiate_automated_cleanup():
   root_dir = os.fspath(pathlib.Path().parent.absolute())
   root_files = os.listdir(root_dir)
 
+  # Scan package workspace directory
+  workspace_files = os.listdir(bot_workspace_location)
+
   # Optional Output
   if output["cleanup_sequence"]: print(f"""
       root_dir: {root_dir}
       root_files: {root_files}
+
+      workspace_dir: {bot_workspace_location}
+      workspace_files: {workspace_files}
     """)
+
+
+  # Optional Output
+  if output["cleanup_sequence"]: print(f"\nCleaning Root Location Now...\n")
 
   for file in root_files:
     if file not in ["dae", "run.py", "readme.txt", "requirements.txt", ".gitignore", ".gitattributes", ".git", "Todo.txt"]:
@@ -31,6 +41,19 @@ def initiate_automated_cleanup():
       if output["cleanup_sequence"]: print(f"{file} Was Deleted")
     else:
       if output["cleanup_sequence"]: print(f"{file} Was Detected")
+
+
+  # Optional Output
+  if output["cleanup_sequence"]: print(f"\nCleaning Bot Workspace Location Now...\n")
+
+  for file in workspace_files:
+    os.remove(os.path.join(bot_workspace_location, file)) # Delete the file
+
+    # Optional Output
+    if output["cleanup_sequence"]: print(f"{file} Was Deleted")
+
+
+
 
   if output: print(f"""\nCLEANUP SUCCESSFUL\n#####################################################\n""")
 
