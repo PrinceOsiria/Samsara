@@ -109,7 +109,7 @@ def move_drive_file(file_id=None, parent_id=None):
                         removeParents = prev_parents,
                         fields = 'id, parents',
                         ).execute()
-  return file["parents"]
+  return file["id"]
 
 
 
@@ -255,15 +255,15 @@ def upload_file_to_drive(file=None, directory=None, parent_id=None, file_name=No
   file1 = drive.CreateFile({'title': file_name})
   file1.SetContentFile(directory+file)
   file1.Upload()
-  move_drive_file(file_id=file1['id'], parent_id=parent_id)
-  return file1['id']
+  return move_drive_file(file_id=file1['id'], parent_id=parent_id)
 
 
 
 # Create Document from Template
 def create_document_from_template(template_id=None, batch_update=None, target_directory=None, file_title=None):
-	file = copy_drive_file_to_folder(file_id=template_id, parent_id=target_directory, copy_title=file_title)
-	docs.batchUpdate(documentId=file, body={'requests': batch_update}).execute()
+  file = copy_drive_file_to_folder(file_id=template_id, parent_id=target_directory, copy_title=file_title)
+  docs.batchUpdate(documentId=file, body={'requests': batch_update}).execute()
+  return file
 
 
 # This stupid shit must be run first - otherwise certain (if not all) api features will not work

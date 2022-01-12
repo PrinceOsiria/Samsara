@@ -1143,21 +1143,255 @@ def archive_events(new_events):
 
 
 
+		# Prepare for Event Document Generation
+		template_id = check_files_for_title(files=template_files, title="Event")['id']
+		requests = [
 
 
-		# Create Event Document
+			##### LINKS
 
+			# Hyperlink the Video Evidence
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 111,
+			        'endIndex': 120
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_video_folder_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+
+			# Hyperlink the Audio Evidence
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 101,
+			        'endIndex': 111
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_audio_folder_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+			# Hyperlink the Image Evidence
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 91,
+			        'endIndex': 101
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_image_folder_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+
+			# Hyperlink the Archive
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 39,
+			        'endIndex': 55
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_event_folder_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+			# Hyperlink the Day
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 30,
+			        'endIndex': 37
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.day.document_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+			# Hyperlink the Month
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 20,
+			        'endIndex': 29
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.month.document_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+
+			# Hyperlink the Year
+			{'updateTextStyle': {
+			    'range': {
+			        'startIndex': 11,
+			        'endIndex': 19
+			    },
+			    'textStyle': {
+			      'link': {'url': f"https://docs.google.com/document/d/{str(event.year.document_id)}"},
+			      'weightedFontFamily': {
+			        'fontFamily': "Times New Roman"},
+			        'fontSize': {
+			          'magnitude': 12,
+			          'unit': 'PT'
+			        },
+			    },
+			    'fields': 'link,weightedFontFamily,fontSize'
+			  }
+			},
+
+
+
+			##### IMAGE
+
+			{'insertInlineImage': {
+				'location': {
+					'index': 59
+				},
+
+			'uri': f'https://drive.google.com/uc?export=view&id={event.event_gif_file}',
+			
+			'objectSize': {
+				'height': {
+					'magnitude': 100,
+					'unit': 'PT'
+				},
+				'width': {
+					'magnitude': 100,
+					'unit': 'PT'
+				}
+			}}},
+
+			##### TEXT
+
+			# Add the Image Evidence
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{IMAGE}}'}, 
+				'replaceText': "Image Evidence"}			
+			},
+
+
+			# Add the Video Evidence
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{VIDEO}}'}, 
+				'replaceText': "Video Evidence"}			
+			},
+
+
+			# Add the Audio Evidence
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{AUDIO}}'}, 
+				'replaceText': "Audio Evidence"}			
+			},
+
+
+			# Add the Summary
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{SUMMARY}}'}, 
+				'replaceText': str(event.summary)}			
+			},
+
+
+			# Add the Archive
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{EVENT_FOLDER}}'}, 
+				'replaceText': "Filesystem"}			
+			},
+
+
+			# Add the Day
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{DAY}}'}, 
+				'replaceText': str(event.day.day)}			
+			},
+
+
+			# Add the Month
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{MONTH}}'}, 
+				'replaceText': str(event.month.month)}			
+			},
+
+
+			# Add the Year
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{YEAR}}'}, 
+				'replaceText': str(event.year.year)}			
+			},
+
+
+			# Add the Title
+			{'replaceAllText': {
+				'containsText': {
+					'text': '{{TITLE}}'},
+				'replaceText': str(event.title)}			
+			},
+
+
+
+			
+
+
+			]
+		# Create Event Document & Update the Database
+		event.summary_document_id = create_document_from_template(template_id=template_id, batch_update=requests, target_directory=event.drive_event_folder_id, file_title=event.title)
+		session.commit()
 
 		# Add Event to Day Document
-
-		# Update Database
-
-		
-
-
-
-
-
+		insert_text_to_drive_document(id=event.day.document_id, text=str(event.title), index=1, link="https://docs.google.com/document/d/" + event.summary_document_id, font="Anonymous Pro", font_size=20)
 
 		
 
