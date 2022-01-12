@@ -42,7 +42,8 @@ class Drive(Base):
 	DAE_folder_id = Column(String, unique=True)
 	archive_folder_id = Column(String, unique=True)
 	current_events_file_id = Column(String, unique=True)
-
+	years_file_id = Column(String, unique=True)
+	template_folder_id = Column(String, unique=True)
 
 
 # Year Model
@@ -56,6 +57,9 @@ class Year(Base):
 	months = relationship("Month", backref="year")
 	days = relationship("Day", backref="year")
 	events = relationship("Event", backref="year")
+
+	# Document
+	document_id = Column(String)
 
 
 
@@ -71,6 +75,9 @@ class Month(Base):
 	days = relationship("Day", backref="month")
 	events = relationship("Event", backref="month")
 
+	# Document
+	document_id = Column(String)
+
 
 
 # Day Model
@@ -84,6 +91,9 @@ class Day(Base):
 	month_id = Column(Integer, ForeignKey('Month.drive_folder_id'))
 	day = Column(Integer)
 	events = relationship("Event", backref="day")
+
+	# Document
+	document_id = Column(String)
 
 
 

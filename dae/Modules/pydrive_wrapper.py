@@ -2,7 +2,12 @@
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
 #Configuration
-from dae.Config import private_key_location, bot_workspace_location
+#from dae.Config import private_key_location, bot_workspace_location
+
+# Local Filesystem Configuration - DEUBUG ONLY
+private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
+bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
+drive_root_folder_id = "19gVNYWPR4B3h4CduKKKr2qmKUwc0gALK"
 
 # Google Drive Access
 from pydrive.drive import GoogleDrive
@@ -84,6 +89,7 @@ def delete_drive_folder(id=None):
 def copy_drive_file(file_id=None, copy_title=None):
   copied_file = {'title': copy_title}
   file_data = drive.auth.service.files().copy(fileId=file_id, body=copied_file).execute()
+
   return file_data['id']
 
 # Copy Drive File to Folder
@@ -190,13 +196,56 @@ def rename_drive_document(id=None,title=None):
 
 
 # Insert Text to Document
-def insert_text_to_drive_document(id=None, text=None, index=1):
+def insert_text_to_drive_document(id=None, text=None, index=1, link=None, font="Anonymous Pro", font_size=30):
+  offset = len(text)
 
-  content = [
-    {'insertText': {
-      'location': {'index': index},
-      'text':text}
-    }]
+  if link:
+      content = [
+        {'insertText': {
+          'location': {'index': index},
+          'text':text + "\n"}
+        },
+        {
+          'updateTextStyle': {
+            'range': {
+                'startIndex': index,
+                'endIndex': index + offset
+            },
+            'textStyle': {
+              'link': {'url': link},
+              'weightedFontFamily': {
+                'fontFamily': font},
+                'fontSize': {
+                  'magnitude': font_size,
+                  'unit': 'PT'
+                },
+            },
+            'fields': 'link,weightedFontFamily,fontSize'
+          }
+        }]
+  else:
+      content = [
+        {'insertText': {
+          'location': {'index': index},
+          'text':text + "\n"}
+        },
+        {
+          'updateTextStyle': {
+            'range': {
+                'startIndex': index,
+                'endIndex': index + offset
+            },
+            'textStyle': {
+              'weightedFontFamily': {
+                'fontFamily': font},
+                'fontSize': {
+                  'magnitude': font_size,
+                  'unit': 'PT'
+                },
+            },
+            'fields': 'weightedFontFamily,fontSize'
+          }
+        }]
 
   docs.batchUpdate(documentId=id,body={'requests': content}).execute()
 
@@ -211,5 +260,17 @@ def upload_file_to_drive(file=None, directory=None, parent_id=None, file_name=No
 
 
 
+# Create Document from Template
+def create_document_from_template(template_id=None, batch_update=None, target_directory=None, file_title=None):
+	file = copy_drive_file_to_folder(file_id=template_id, parent_id=target_directory, copy_title=file_title)
+	docs.batchUpdate(documentId=file, body={'requests': batch_update}).execute()
 
 
+# This stupid shit must be run first - otherwise certain (if not all) api features will not work
+query_drive(f"'{drive_root_folder_id}' in parents")
+
+
+##### WORKSPACE #####
+#requests = [{'replaceAllText': {'containsText': {'text': '{{ TITLE }}'},'replaceText': "Test 2 Passed",}}]
+#create_document_from_template(template_id="1kJsiH2tddGPLEUPCcu0xoR7F9G60wMkCrTsjPK2WbDM", batch_update=requests, target_directory="1euXckytMrTz8t2wkBCkI-yBU0OCI4hJF", file_title="Test 1 Passed")
+#insert_text_to_drive_document(id="1TY0luNcLqjJ4npCQ_bkeo3jXfEKqKY4f58d9MPi7hs4", text="2021", index=1, offset=5, link="https://www.example.com", font="Anonymous Pro", font_size=30)

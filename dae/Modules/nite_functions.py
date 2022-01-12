@@ -3,7 +3,7 @@
 ###########################################################################################################################################
 # Core Discord Imports
 from dae import *
-from dae.Config import root_folder_id
+from dae.Config import root_folder_id, years_document_id
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
@@ -95,10 +95,20 @@ def scan_drive(root_folder_id = root_folder_id):
 		if output["drive_scan"]: print(f"\tFile was Found with ID: {current_events_file_id}\n")
 
 
+		# Optional Output		
+		if output["drive_scan"]: print("\nLooking for 'Templates':")
+		
+		# Scan Root Files for a matching title
+		template_folder_id = check_files_for_title(files=DAE_files, title="Templates")["id"]
+		
+		# Optional Output
+		if output["drive_scan"]: print(f"\tFile was Found with ID: {template_folder_id}\n")
+
+
 
 
 		# Iternalize the IDs of the required drive folders
-		drive_map = Drive(root_folder_id=root_folder_id, NITE_folder_id=NITE_folder_id, DAE_folder_id=DAE_folder_id, archive_folder_id=archive_folder_id, evidence_folder_id=evidence_folder_id, current_events_file_id=current_events_file_id)
+		drive_map = Drive(template_folder_id=template_folder_id, root_folder_id=root_folder_id, NITE_folder_id=NITE_folder_id, DAE_folder_id=DAE_folder_id, archive_folder_id=archive_folder_id, evidence_folder_id=evidence_folder_id, current_events_file_id=current_events_file_id)
 		add_to_db(drive_map)
 
 		# Optional Output
@@ -181,11 +191,22 @@ def scan_drive(root_folder_id = root_folder_id):
 		if output["drive_scan"]: print(f"\tFile was Found with ID: {current_events_file_id}\n")
 
 
+		# Optional Output		
+		if output["drive_scan"]: print("\nLooking for 'Templates':")
+		
+		# Scan Root Files for a matching title
+		template_folder_id = check_files_for_title(files=DAE_files, title="Templates")["id"]
+		
+		# Optional Output
+		if output["drive_scan"]: print(f"\tFile was found with ID: {template_folder_id}\n")
+
+		
+
 
 		# Iternalize the IDs of the required drive folders
-		scanned_drive_map = Drive(root_folder_id=root_folder_id, NITE_folder_id=NITE_folder_id, DAE_folder_id=DAE_folder_id, archive_folder_id=archive_folder_id, evidence_folder_id=evidence_folder_id, current_events_file_id=current_events_file_id)
+		scanned_drive_map = Drive(template_folder_id=template_folder_id, root_folder_id=root_folder_id, NITE_folder_id=NITE_folder_id, DAE_folder_id=DAE_folder_id, archive_folder_id=archive_folder_id, evidence_folder_id=evidence_folder_id, current_events_file_id=current_events_file_id)
 		
-		if ((scanned_drive_map.root_folder_id != drive_map.root_folder_id) or (scanned_drive_map.NITE_folder_id != NITE_folder_id) or (scanned_drive_map.DAE_folder_id != drive_map.DAE_folder_id) or (scanned_drive_map.archive_folder_id != drive_map.archive_folder_id) or (scanned_drive_map.evidence_folder_id != drive_map.evidence_folder_id) or (scanned_drive_map.current_events_file_id != drive_map.current_events_file_id)):
+		if ((drive_map.template_folder_id != scanned_drive_map.template_folder_id) or (scanned_drive_map.root_folder_id != drive_map.root_folder_id) or (scanned_drive_map.NITE_folder_id != NITE_folder_id) or (scanned_drive_map.DAE_folder_id != drive_map.DAE_folder_id) or (scanned_drive_map.archive_folder_id != drive_map.archive_folder_id) or (scanned_drive_map.evidence_folder_id != drive_map.evidence_folder_id) or (scanned_drive_map.current_events_file_id != drive_map.current_events_file_id)):
 			print("WARNING - THE FILESYSTEM SCANNED DOES NOT MATCH THE INTERNAL DATABASE")
 		else:
 			# Optional Output
@@ -458,6 +479,9 @@ def archive_events(new_events):
 	# Non-Optional Output
 	if output: print(f"""\n#####################################################\nARCHIVING NEW EVENTS\n""")
 
+	# Non-capitalized 'drive' is for reading while capitalized 'Drive' is for writing
+	drive = session.query(Drive).first()
+
 	# Archive new events
 	for event in new_events:
 
@@ -492,7 +516,7 @@ def archive_events(new_events):
 			if output["new_events_plus"]: print(f"""\t\t\tThe Year '{year}' Was not found in the Internal Database""")
 
 			# Find Archive Folder
-			archive_folder_id = session.query(Drive).first().archive_folder_id
+			archive_folder_id = drive.archive_folder_id
 
 			# Scan Archive Folder
 			year_files = query_drive(f"'{archive_folder_id}' in parents")
@@ -801,7 +825,7 @@ def archive_events(new_events):
 
 		# Generate Text File
 		text_summary_id = create_drive_document(parent_id=event.drive_archive_text_folder_id, title="Text Summary.txt")
-		insert_text_to_drive_document(id = text_summary_id, text=event.summary)
+		insert_text_to_drive_document(id = text_summary_id, text=event.summary, index=1, font_size=16)
 		event.drive_archive_text_file_id = text_summary_id
 		session.commit()
 
@@ -883,8 +907,6 @@ def archive_events(new_events):
 			if filename in audio_evidence_id_list:
 				correct_files.append(file)
 
-		print(correct_files)
-
 		# Generate Audio File
 		if correct_files:
 			audio_file = compile_audio_files(files=correct_files, directory=bot_workspace_location, file_name="Audio Evidence Compilation.mp3")
@@ -938,8 +960,119 @@ def archive_events(new_events):
 
 
 		##### WORKSPACE #####
-		print("Oh yeah, baby")
 
+		# Optional Output
+		if output["new_events"]: print(f"Generating Timeline Documents...")
+
+		# Optional Output
+		if output["new_events_more"]: print(f"Checking for pre-existing years document")		
+
+		# Scan Archive Folder
+		year_files = query_drive(f"'{drive.archive_folder_id}' in parents")
+
+		# Verify Location of Years Document
+		template_files = list_drive_directory(id=drive.template_folder_id)
+		years_file_exists = check_files_for_title(files=year_files, title="Years")
+
+
+		if years_file_exists:
+			if drive.years_file_id == years_file_exists["id"]:
+
+				# Optional Output
+				if output["new_events"]: print(f"\nYears File Verified\n")
+
+			# Years File Corrupted (To fix, delete and rebuild entire archive...)
+			else:
+
+				# Optional Output
+				if output["new_events"]: print(f"\nYears File Could not be Verified - Generating a new one - NOTE: MANUAL REPAIRS NEEDED\n")
+
+				delete_drive_folder(id=years_file_exists["id"])
+				drive.years_file_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Years")["id"], copy_title="Years", parent_id=drive.archive_folder_id)
+
+				# Optional Output
+				if output["new_events"]: print(f"\nYears File Generated\n")
+
+		# Years File Missing
+		else:
+			# Optional Output
+			if output["new_events"]: print(f"\nYears File Was Not Found - Generating a new one - NOTE: MANUAL REPAIRS NEEDED\n")
+
+			drive.years_file_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Years")["id"], copy_title="Years", parent_id=drive.archive_folder_id)
+
+			# Optional Output
+			if output["new_events"]: print(f"\nYears File Generated\n")
+
+
+		# Update the Database
+		session.commit()
+
+
+		# Check for Year Document
+		year_files = list_drive_directory(id=event.year_id)
+		year_file_exists = check_files_for_title(files=year_files, title=str(event.year.year))
+
+
+		if year_file_exists:
+			
+			# Optional Output
+			if output["new_events"]: print(f"Year File Found with id: {year_file_exists['id']}")
+	
+			if year_file_exists["id"] == event.year.document_id:
+			
+				# Optional output
+				if output["new_events"]: print(f"Year File Verified Successfully")
+
+			# Year Document is Corrupted
+			else:
+				# Optional output
+				if output["new_events"]: print(f"Year File Could Not Be Verified - MANUAL PATCHING REQUIRED")
+
+				# Delete The Corrupted File
+				delete_drive_folder(id=year_file_exists["id"])
+
+				# Create a New File
+				event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=event.year.year, parent_id=event.year.drive_folder_id)
+				session.commit()
+
+				# Update Years Document
+				insert_text_to_drive_document(id=drive.years_file_id, text=str(event.year.year), index=1, link="https://docs.google.com/document/d/" + event.year.document_id, font="Anonymous Pro", font_size=20)
+
+
+		# If it doesn't exist, create it & Update the Database - ALSO ADD YEAR TO YEARS DOCUMENT
+		else:
+
+			# Optional output
+			if output["new_events"]: print(f"Year File is Being Generated")
+
+			# Create a New File
+			event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=event.year.year, parent_id=event.year.drive_folder_id)
+			session.commit()
+
+			# Update Years Document
+			insert_text_to_drive_document(id=drive.years_file_id, text=str(event.year.year), index=1, link="https://docs.google.com/document/d/" + event.year.document_id, font="Anonymous Pro", font_size=20)
+
+		# Check for Month Document
+
+
+		# If it doesn't exist, create it & Update the Database - ALSO ADD MONTH TO YEAR DOCUMENT
+
+		# Check for Day Document
+
+
+		# If it doesn't exist, create it & Update the Database - ALSO ADD DAY TO MONTH DOCUMENT
+
+		# Create Event Document
+
+
+		# Add Event to Day Document
+
+		# Update Database
+
+		##### Continue until all events are completed, a seperate loop may be used for video generation, but not sure yet
+
+
+		
 
 
 
