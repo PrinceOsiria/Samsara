@@ -1053,14 +1053,97 @@ def archive_events(new_events):
 			insert_text_to_drive_document(id=drive.years_file_id, text=str(event.year.year), index=1, link="https://docs.google.com/document/d/" + event.year.document_id, font="Anonymous Pro", font_size=20)
 
 		# Check for Month Document
+		month_files = list_drive_directory(id=event.month_id)
+		month_file_exists = check_files_for_title(files=month_files, title=str(event.month.month))
 
 
-		# If it doesn't exist, create it & Update the Database - ALSO ADD MONTH TO YEAR DOCUMENT
+		if month_file_exists:
+			
+			# Optional Output
+			if output["new_events"]: print(f"Month File Found with id: {month_file_exists['id']}")
+	
+			if month_file_exists["id"] == event.month.document_id:
+			
+				# Optional output
+				if output["new_events"]: print(f"Month File Verified Successfully")
+
+			# Month Document is Corrupted
+			else:
+				# Optional output
+				if output["new_events"]: print(f"Month File Could Not Be Verified - MANUAL PATCHING REQUIRED")
+
+				# Delete The Corrupted File
+				delete_drive_folder(id=month_file_exists["id"])
+
+				# Create a New File
+				event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=event.month.month, parent_id=event.month.drive_folder_id)
+				session.commit()
+
+				# Update Years Document
+				insert_text_to_drive_document(id=event.year.document_id, text=str(event.month.month), index=1, link="https://docs.google.com/document/d/" + event.month.document_id, font="Anonymous Pro", font_size=20)
+
+
+		# If it doesn't exist, create it & Update the Database - ALSO ADD YEAR TO YEARS DOCUMENT
+		else:
+
+			# Optional output
+			if output["new_events"]: print(f"Month File is Being Generated")
+
+			# Create a New File
+			event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=event.month.month, parent_id=event.month.drive_folder_id)
+			session.commit()
+
+			# Update Years Document
+			insert_text_to_drive_document(id=event.year.document_id, text=str(event.month.month), index=1, link="https://docs.google.com/document/d/" + event.month.document_id, font="Anonymous Pro", font_size=20)
+
 
 		# Check for Day Document
+		day_files = list_drive_directory(id=event.day_id)
+		day_file_exists = check_files_for_title(files=day_files, title=str(event.day.day))
 
 
-		# If it doesn't exist, create it & Update the Database - ALSO ADD DAY TO MONTH DOCUMENT
+		if day_file_exists:
+			
+			# Optional Output
+			if output["new_events"]: print(f"Day File Found with id: {day_file_exists['id']}")
+	
+			if day_file_exists["id"] == event.day.document_id:
+			
+				# Optional output
+				if output["new_events"]: print(f"Day File Verified Successfully")
+
+			# Day Document is Corrupted
+			else:
+				# Optional output
+				if output["new_events"]: print(f"Day File Could Not Be Verified - MANUAL PATCHING REQUIRED")
+
+				# Delete The Corrupted File
+				delete_drive_folder(id=day_file_exists["id"])
+
+				# Create a New File
+				event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=event.day.day, parent_id=event.day.drive_folder_id)
+				session.commit()
+
+				# Update Years Document
+				insert_text_to_drive_document(id=event.month.document_id, text=str(event.day.day), index=1, link="https://docs.google.com/document/d/" + event.day.document_id, font="Anonymous Pro", font_size=20)
+
+
+		# If it doesn't exist, create it & Update the Database - ALSO ADD YEAR TO YEARS DOCUMENT
+		else:
+
+			# Optional output
+			if output["new_events"]: print(f"Day File is Being Generated")
+
+			# Create a New File
+			event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=event.day.day, parent_id=event.day.drive_folder_id)
+			session.commit()
+
+			# Update Years Document
+			insert_text_to_drive_document(id=event.month.document_id, text=str(event.day.day), index=1, link="https://docs.google.com/document/d/" + event.day.document_id, font="Anonymous Pro", font_size=20)
+
+
+
+
 
 		# Create Event Document
 
@@ -1069,12 +1152,7 @@ def archive_events(new_events):
 
 		# Update Database
 
-		##### Continue until all events are completed, a seperate loop may be used for video generation, but not sure yet
-
-
 		
-
-
 
 
 
