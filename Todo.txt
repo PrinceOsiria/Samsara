@@ -1,20 +1,4 @@
 
-Produce a working compilation/generation module for each mimetype
-
-Import modules to Samsara
-
-Summary Document Generation: - this part is tricky
-
-2 pages only
-First page contains gif alongside standardized linking and the event's description
-Second page is also standardized and also contains video and audio (embedded)
-Due to need to embed media files, it is necessary to research the restrictions - I believe trawling through gdocs api will eventually work
-Same as above
-
-
-Once summary documents are generated, they must be linked into a table of contents system automatically
-
-
 Begin work on discord querying and data presentation
 
 Assess video generation

@@ -1165,7 +1165,7 @@ def archive_events(new_events):
 			        'endIndex': 120
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_video_folder_id)}"},
+			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_video_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1185,7 +1185,7 @@ def archive_events(new_events):
 			        'endIndex': 111
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_audio_folder_id)}"},
+			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_audio_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1204,7 +1204,7 @@ def archive_events(new_events):
 			        'endIndex': 101
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_archive_image_folder_id)}"},
+			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_image_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1224,7 +1224,7 @@ def archive_events(new_events):
 			        'endIndex': 55
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/document/d/{str(event.drive_event_folder_id)}"},
+			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_event_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1395,11 +1395,11 @@ def archive_events(new_events):
 
 			]
 		# Create Event Document & Update the Database
-		event.summary_document_id = create_document_from_template(template_id=template_id, batch_update=requests, target_directory=event.drive_event_folder_id, file_title=event.title)
+		event.event_summary_file = create_document_from_template(template_id=template_id, batch_update=requests, target_directory=event.drive_event_folder_id, file_title=event.title)
 		session.commit()
 
 		# Add Event to Day Document
-		insert_text_to_drive_document(id=event.day.document_id, text=str(event.title), index=1, link="https://docs.google.com/document/d/" + event.summary_document_id, font="Anonymous Pro", font_size=20)
+		insert_text_to_drive_document(id=event.day.document_id, text=str(event.title), index=1, link="https://docs.google.com/document/d/" + event.event_summary_file, font="Anonymous Pro", font_size=20)
 
 		
 

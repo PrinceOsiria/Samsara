@@ -111,7 +111,6 @@ class Event(Base):
 	# Drive  Information
 	drive_event_folder_id = Column(String())
 	drive_archive_folder_id = Column(String())
-	drive_summary_document_id = Column(String())
 
 	# Archive mimeType folders
 	drive_archive_image_folder_id = Column(String())
