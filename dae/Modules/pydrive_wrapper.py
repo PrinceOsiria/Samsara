@@ -2,12 +2,13 @@
 ##################################################### Imports #############################################################################
 ###########################################################################################################################################
 #Configuration
-#from dae.Config import private_key_location, bot_workspace_location
+from dae.Config import private_key_location, bot_workspace_location
+from dae.Config import root_folder_id as drive_root_folder_id
 
 # Local Filesystem Configuration - DEUBUG ONLY
-private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
-bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
-drive_root_folder_id = "19gVNYWPR4B3h4CduKKKr2qmKUwc0gALK"
+#private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
+#bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
+#drive_root_folder_id = "19gVNYWPR4B3h4CduKKKr2qmKUwc0gALK"
 
 # Google Drive Access
 from pydrive.drive import GoogleDrive
@@ -111,6 +112,9 @@ def move_drive_file(file_id=None, parent_id=None):
                         ).execute()
   return file["id"]
 
+# Get Drive File
+def get_drive_file(id=None):
+  return drive.CreateFile(id=id).Upload()
 
 
 # Check listing of files for a matching title

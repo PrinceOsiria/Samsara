@@ -235,6 +235,11 @@ def validate_cloud_integrity():
 		# Check archive folder for the expected year folder
 		year_exists_on_drive = check_files_for_id(files=list_drive_directory(id=archive_folder_id), id=event.year_id)
 
+		# Check for Corrupted Events
+		if event.year_id == None:
+			pass
+
+
 		if year_exists_on_drive:
 
 			# Optional Output
@@ -433,13 +438,14 @@ def validate_cloud_integrity():
 			event.drive_archive_folder_id = ""
 
 			# Delete broken entries
-			months = session.query(Month).all()
-			for month in event.year.months:
-				for day in month.days:
-					session.delete(day)
-				session.delete(month)
-			session.delete(event.year)
-			session.commit()
+			if event.year != None:
+				months = session.query(Month).all()
+				for month in event.year.months:
+					for day in month.days:
+						session.delete(day)
+					session.delete(month)
+				session.delete(event.year)
+				session.commit()
 
 
 	# Optional Output
@@ -1142,6 +1148,8 @@ def archive_events(new_events):
 			insert_text_to_drive_document(id=event.month.document_id, text=str(event.day.day), index=1, link="https://docs.google.com/document/d/" + event.day.document_id, font="Anonymous Pro", font_size=20)
 
 
+		##### DEBUG
+		print(f'https://drive.google.com/uc?id={str(event.event_gif_file)}')
 
 		# Prepare for Event Document Generation
 		template_id = check_files_for_title(files=template_files, title="Event")['id']
@@ -1294,15 +1302,15 @@ def archive_events(new_events):
 					'index': 59
 				},
 
-			'uri': f'https://drive.google.com/uc?export=view&id={event.event_gif_file}',
+			'uri': f'https://drive.google.com/uc?id={str(event.event_gif_file)}',
 			
 			'objectSize': {
 				'height': {
-					'magnitude': 100,
+					'magnitude': 500,
 					'unit': 'PT'
 				},
 				'width': {
-					'magnitude': 100,
+					'magnitude': 500,
 					'unit': 'PT'
 				}
 			}}},
