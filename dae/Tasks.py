@@ -14,7 +14,7 @@ from dae.Modules.nite_functions import *
 ##################################################### Tasks $##############################################################################
 ###########################################################################################################################################
 # Task Practice
-@tasks.loop(minutes=5)
+@tasks.loop(minutes=30)
 async def samsara():
 
 	# Non-Optional Output
@@ -24,19 +24,22 @@ Codename Samsara is: ONLINE
 """)
 
 	# Debug Halt
-	if debug_halt == True: print("Please Press Enter to Begin"); input()
+	if debug_halt: print("Please Press Enter to Begin"); input()
 
-	# Initialization and Validation - N.I.T.E.
-	initiate_automated_cleanup()
-	scan_drive()
-	validate_cloud_integrity()
+	# Debug Skip
+	if not debug_skip:
 
-	# D.A.E.
-	update_database(get_current_events())
-	
-	# N.I.T.E.
-	archive_events(identify_new_events())
-	
+		# Initialization and Validation - N.I.T.E.
+		initiate_automated_cleanup()
+		scan_drive()
+		validate_cloud_integrity()
+
+		# D.A.E.
+		update_database(get_current_events())
+		
+		# N.I.T.E.
+		archive_events(identify_new_events())
+		
 
 
 	# Non-Optional Output

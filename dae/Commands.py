@@ -72,3 +72,169 @@ async def decode(ctx, cipherText, alphaKey, keys):
 
 	# Return
 	await ctx.send(embed=embed)
+
+
+# Request Information on a particular timeframe
+@dae.command()
+async def index(ctx, timeframe="0000", event_title=None):
+
+	# Parse User Input
+	if timeframe:
+
+		# Allow for !index usage on it's own
+		year_override=False
+		if timeframe == "0000": 
+			timeframe_length = 0
+		else:
+			timeframe = timeframe.split("/")
+			timeframe_length = len(timeframe)
+
+
+		# Format the Input
+		year, month, day = None, None, None
+		year_exists, month_exists, day_exists = None, None, None
+	
+
+		# Query Database
+		if timeframe_length > 0: 
+			year = timeframe[0]
+			year_exists = session.query(Year).filter_by(year=year).first()
+	
+
+		if timeframe_length > 1: 
+			month = timeframe[1]
+			month_exists = session.query(Month).filter_by(month=month).first()
+	
+
+		if timeframe_length > 2: 
+			day = timeframe[2]
+			day_exists = session.query(Day).filter_by(day=day).first()
+
+
+		# Allow listing found events
+		if event_title:
+			event_exists = session.query(Event).filter_by(title=event_title).first()
+		else:
+			event_exists = False
+
+
+		# Prepare the Output
+		embed = discord.Embed()
+		
+
+		# Determine the correct data to output
+		if year_exists: 
+			if month_exists:
+				if day_exists:
+					if event_exists:
+						requested_id = event_exists.event_video_summary_file
+						event_summary_document = event_exists.event_summary_file
+						event_tags = event_exists.tags
+
+					# day
+					else:
+						requested_id = day_exists.document_id
+						found_data = session.query(Event).filter_by(day=day_exists).all()
+						data_type = "event"
+
+						export = []
+						for found_event in found_data:
+							export.append(found_event.title)
+
+						found_data = export
+
+				# Month
+				else:
+					requested_id = month_exists.document_id
+					found_data = session.query(Day).filter_by(month=month_exists).all()
+					data_type = "day"
+
+					export = []
+					for found_day in found_data:
+						export.append(str(found_day.day))
+
+					found_data = export
+
+			# Year
+			else:
+				requested_id = year_exists.document_id
+				found_data = session.query(Month).filter_by(year=year_exists).all()
+				data_type = "month"
+
+				export = []
+				for found_month in found_data:
+					export.append(str(found_month.month))
+
+				found_data = export
+		
+		# None
+		else:
+			requested_id = False
+			found_data = session.query(Year).all()
+			data_type = "year"
+
+			export = []
+			for found_year in found_data:
+				export.append(str(found_year.year))
+
+			found_data = export
+
+
+		# Determine which output to use
+		# Event Data Found
+		if event_exists:
+			embed.add_field(
+				name=f"*__Index__*",
+				value=f"""
+				{ctx.message.author.mention} has requested:
+					\tYear: {year}
+					\tMonth: {month}
+					\tDay: {day}
+					\tEvent: {event_title}
+					\tTags: {event_tags}
+
+				\nEvent Document:
+				https://docs.google.com/document/d/{event_summary_document}
+
+				\nSummary Video:
+				https://drive.google.com/file/d/{requested_id}
+			""")
+
+
+		# Timeframe Data Found
+		elif requested_id:
+			embed.add_field(
+				name=f"*__Index__*",
+				value=f"""
+				{ctx.message.author.mention} has requested: 
+					\tYear: {year}
+					\tMonth: {month}
+					\tDay: {day}
+
+				\n Here are the {data_type}s I found:
+				{found_data}
+
+				\nTimeline Document
+				https://docs.google.com/document/d/{requested_id}
+			""")
+
+
+		# No Data Found
+		else:
+			if year:
+				message = f"There are no events archived under the year {year}"
+			else:
+				message = ""
+
+			embed.add_field(
+				name=f"*__Index__*",
+				value=f"""
+				{message}
+
+				\n Here are the years I found:
+				{found_data}
+			""")
+		
+
+		# Return
+		await ctx.send(embed=embed)

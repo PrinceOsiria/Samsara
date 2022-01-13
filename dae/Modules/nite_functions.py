@@ -307,7 +307,7 @@ def validate_cloud_integrity():
 											status_of_cloud_files = "Compromised - Attempting to Fix"
 
 											# Set event.drive_archive_folder_id to null
-											event.drive_archive_folder_id = ""
+											event.event_summary_file = ""
 
 										else:
 											# Optional Output
@@ -323,7 +323,7 @@ def validate_cloud_integrity():
 											status_of_cloud_files = "Compromised - Attempting to Fix"
 
 											# Set event.drive_archive_folder_id to null
-											event.drive_archive_folder_id = ""
+											event.event_summary_file = ""
 
 										else:
 											# Optional Output
@@ -339,7 +339,7 @@ def validate_cloud_integrity():
 											status_of_cloud_files = "Compromised - Attempting to Fix"
 
 											# Set event.drive_archive_folder_id to null
-											event.drive_archive_folder_id = ""
+											event.event_summary_file = ""
 
 										else:
 											# Optional Output
@@ -356,7 +356,7 @@ def validate_cloud_integrity():
 									status_of_cloud_files = "Compromised - Attempting to Fix"
 
 									# Set event.drive_archive_folder_id to null
-									event.drive_archive_folder_id = ""
+									event.event_summary_file = ""
 
 
 							# ARCHIVE CORRUPTED - Reconstruction Required
@@ -367,7 +367,7 @@ def validate_cloud_integrity():
 								status_of_cloud_files = "Compromised - Attempting to Fix"
 
 								# Set event.drive_archive_folder_id to null
-								event.drive_archive_folder_id = ""
+								event.event_summary_file = ""
 
 							# CONFIRM SUMMARY DOCUMENTS AT A LATER TIME - IF MISSING, RECONSTRUCT EVENT
 
@@ -380,7 +380,7 @@ def validate_cloud_integrity():
 							status_of_cloud_files = "Compromised - Attempting to Fix"
 
 							# Set event.drive_archive_folder_id to null
-							event.drive_archive_folder_id = ""
+							event.event_summary_file = ""
 
 					# EVENT DELETED - Reconstruction Required
 					else:
@@ -391,7 +391,7 @@ def validate_cloud_integrity():
 						status_of_cloud_files = "Compromised - Attempting to Fix"
 
 						# Set event.drive_archive_folder_id to null
-						event.drive_archive_folder_id = ""
+						event.event_summary_file = ""
 
 				# DAY DELETED - Surgery Required
 				else:
@@ -402,7 +402,7 @@ def validate_cloud_integrity():
 					status_of_cloud_files = "Compromised - Attempting to Fix"
 
 					# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
-					event.drive_archive_folder_id = ""
+					event.event_summary_file = ""
 
 					# Delete broken entries
 					session.delete(event.day)
@@ -417,7 +417,7 @@ def validate_cloud_integrity():
 				status_of_cloud_files = "Compromised - Attempting to Fix"
 
 				# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
-				event.drive_archive_folder_id = ""
+				event.event_summary_file = ""
 
 				# Delete broken entries
 				if event.month != None:
@@ -436,7 +436,7 @@ def validate_cloud_integrity():
 			status_of_cloud_files = "Compromised - Attempting to Fix"
 
 			# Delete event.drive_archive_folder_id - this will flag the event as new and re-generate it
-			event.drive_archive_folder_id = ""
+			event.event_summary_file = ""
 
 			# Delete broken entries
 			if event.year != None:
@@ -1165,7 +1165,7 @@ def archive_events(new_events):
 			        'endIndex': 120
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_video_folder_id)}?usp=sharing"},
+			      'link': {'url': f"https://drive.google.com/drive/folders/{str(event.drive_archive_video_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1185,7 +1185,7 @@ def archive_events(new_events):
 			        'endIndex': 111
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_audio_folder_id)}?usp=sharing"},
+			      'link': {'url': f"https://drive.google.com/drive/folders/{str(event.drive_archive_audio_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1204,7 +1204,7 @@ def archive_events(new_events):
 			        'endIndex': 101
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_archive_image_folder_id)}?usp=sharing"},
+			      'link': {'url': f"https://drive.google.com/drive/folders/{str(event.drive_archive_image_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {
@@ -1224,7 +1224,7 @@ def archive_events(new_events):
 			        'endIndex': 55
 			    },
 			    'textStyle': {
-			      'link': {'url': f"https://docs.google.com/folder/{str(event.drive_event_folder_id)}?usp=sharing"},
+			      'link': {'url': f"https://drive.google.com/drive/folders/{str(event.drive_event_folder_id)}?usp=sharing"},
 			      'weightedFontFamily': {
 			        'fontFamily': "Times New Roman"},
 			        'fontSize': {

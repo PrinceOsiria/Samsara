@@ -3,7 +3,8 @@
 ###########################################################################################################################################
 # Bot Options
 command_prefix = "!"
-debug_halt = True
+debug_halt = False
+debug_skip = True
 
 # Output options
 selected_output_option = "custom"
