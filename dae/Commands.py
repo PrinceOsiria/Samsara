@@ -7,6 +7,29 @@ from dae import *
 ###########################################################################################################################################
 ##################################################### Commands ############################################################################
 ###########################################################################################################################################
+
+# Help
+@dae.command()
+async def help(ctx):
+	# Output formatting
+	embed = discord.Embed()
+	embed.add_field(name="__Project Samsara__", value ="Welcome to Project Samsara! For help with my commands, please visit this link:", inline = False)
+	embed.add_field(name="__Documentation__", value ="https://tinyurl.com/samsaradocumentation", inline = False)
+
+	# Return
+	await ctx.send(embed=embed)
+
+# Home
+@dae.command()
+async def home(ctx):
+	# Output formatting
+	embed = discord.Embed()
+	embed.add_field(name="__Project Samsara__", value =f"Welcome Back {ctx.message.author.mention}", inline = False)
+	embed.add_field(name="__Project 107__", value ="https://tinyurl.com/samsarahome", inline = False)
+
+	# Return
+	await ctx.send(embed=embed)
+
 # Encode Hels
 @dae.command()
 async def encode(ctx, clearText, alphaKey, keys):

@@ -30,7 +30,7 @@ from dae.Config import output_options, selected_output_option, command_prefix
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
 # Bot Prefix
-dae = commands.Bot(command_prefix=command_prefix)
+dae = commands.Bot(command_prefix=command_prefix, help_command=None)
 
 # Output Options
 output = output_options[selected_output_option]
