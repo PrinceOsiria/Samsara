@@ -7,7 +7,7 @@ from playsound import playsound
 from mutagen.mp3 import MP3
 from PIL import Image
 from pydub import AudioSegment
-from moviepy.editor import VideoFileClip, concatenate_videoclips
+from moviepy.editor import *
 import os
 
 ###########################################################################################################################################
@@ -79,3 +79,45 @@ def compile_video_files(files=None, directory=None, file_name=None):
 	# Export the recombined video file
 	output.write_videofile(directory+file_name)
 	return file_name
+
+
+# Create Video
+def create_video(directory=None, video=None, gif=None, gif_audio=None, file_name=None, verbose=True):
+
+	# Optional Output
+	if verbose == True: print(f"Internalizing gif:\t{directory+gif}")
+
+	# Internalize gif
+	gif = VideoFileClip(directory + gif)
+
+	# Optional Output
+	if verbose == True: print(f"Adding Audio to Gif:\t{directory+gif_audio}")
+
+	# Play audio over gif
+	gif.audio = AudioFileClip(directory + gif_audio)
+
+	# Optional Output
+	if verbose == True: print(f"Internalizing Video:\t{directory+video}")
+
+	# Internalize the compiled media files - Note: Audio not supported (you try getting it to work)
+	if os.path.exists(directory+video):
+		video = VideoFileClip(directory + video)
+
+		# Combine the clips
+		output = concatenate_videoclips([gif, video])
+
+	else:
+		if verbose: print(f"No Video File was Found")
+
+		# Prepare the Gif for Output
+		output = gif
+
+	# Optional Output
+	if verbose == True: print(f"Writing Video File:\t{directory+file_name}")
+
+	# Export the video file
+	output.write_videofile(directory+file_name)
+
+	# Optional Output
+	if verbose == True: print("Nothing is returned")
+

@@ -3,7 +3,7 @@
 ###########################################################################################################################################
 # Core Discord Imports
 from dae import *
-from dae.Config import root_folder_id, years_document_id
+from dae.Config import root_folder_id, years_document_id, bot_workspace_location
 
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
@@ -420,10 +420,11 @@ def validate_cloud_integrity():
 				event.drive_archive_folder_id = ""
 
 				# Delete broken entries
-				for day in event.month.days:
-					session.delete(day)
-				session.delete(event.month)
-				session.commit()
+				if event.month != None:
+					for day in event.month.days:
+						session.delete(day)
+					session.delete(event.month)
+					session.commit()
 
 
 		# YEAR DELETED - Massive reconstructive surgery required
@@ -841,9 +842,6 @@ def archive_events(new_events):
 		# Optional Output
 		if output["new_events"]: print(f"Compiling Media Files...\n")
 
-
-		##### WORKSPACE #####
-
 		# Download Required Files
 		download_drive_dir_files(id=event.drive_archive_image_folder_id)
 		download_drive_dir_files(id=event.drive_archive_video_folder_id)
@@ -853,7 +851,7 @@ def archive_events(new_events):
 		if output["new_events"]: print(f"\nGenerating Audio Summary File...")
 
 		# Generate Audio Summary File
-		audio_summary_file = convert_text_to_audio_file(text=event.summary, directory=bot_workspace_location, file_name=event.drive_archive_text_file_id)
+		audio_summary_file = convert_text_to_audio_file(text=event.summary, directory=bot_workspace_location, file_name=f"{event.title} - Narrated Summary")
 
 		# Optional Output
 		if output["new_events"]: print(f"Uploading Audio Summary File...")
@@ -885,7 +883,7 @@ def archive_events(new_events):
 
 		# Generate Gif File
 		if correct_files:
-			gif_file = generate_gif_file(directory=bot_workspace_location, files=correct_files, file_name="Gif of Image Evidence", length=length, length_delay=3000)
+			gif_file = generate_gif_file(directory=bot_workspace_location, files=correct_files, file_name=f"{event.title} - Gif of Image Evidence", length=length, length_delay=3000)
 
 			# Optional Output
 			if output["new_events"]: print(f"Uploading Gif Summary File...")
@@ -915,7 +913,7 @@ def archive_events(new_events):
 
 		# Generate Audio File
 		if correct_files:
-			audio_file = compile_audio_files(files=correct_files, directory=bot_workspace_location, file_name="Audio Evidence Compilation.mp3")
+			audio_file = compile_audio_files(files=correct_files, directory=bot_workspace_location, file_name=f"{event.title} - Audio Evidence Compilation.mp3")
 
 			# Optional Output
 			if output["new_events"]: print(f"Uploading Audio File...")
@@ -946,7 +944,7 @@ def archive_events(new_events):
 
 		# Generate Video File
 		if correct_files:
-			video_file = compile_video_files(files=correct_files, directory=bot_workspace_location, file_name="Video Evidence Compilation.mp4")
+			video_file = compile_video_files(files=correct_files, directory=bot_workspace_location, file_name=f"{event.title} - Video Evidence Compilation.mp4")
 
 
 			# Optional Output
@@ -1147,8 +1145,10 @@ def archive_events(new_events):
 			# Update Years Document
 			insert_text_to_drive_document(id=event.month.document_id, text=str(event.day.day), index=1, link="https://docs.google.com/document/d/" + event.day.document_id, font="Anonymous Pro", font_size=20)
 
+		# Optional Output
+		if output["new_events"]: print(f"Event File is Being Generated")
 
-		##### DEBUG
+
 		print(f'https://drive.google.com/uc?id={str(event.event_gif_file)}')
 
 		# Prepare for Event Document Generation
@@ -1401,8 +1401,25 @@ def archive_events(new_events):
 		# Add Event to Day Document
 		insert_text_to_drive_document(id=event.day.document_id, text=str(event.title), index=1, link="https://docs.google.com/document/d/" + event.event_summary_file, font="Anonymous Pro", font_size=20)
 
+		# Optional Output
+		if output["new_events"]: print(f"\nA Video Summary is being Generated")
+
+		# Prepare to Generate Video
+		video = f"{event.title} - Video Evidence Compilation.mp4"
+		gif = f"{event.title} - Gif of Image Evidence.gif"
+		gif_audio = f"{event.title} - Narrated Summary.mp3"
+
+		# Generate Video
+		create_video(directory=bot_workspace_location,video=video, gif=gif, gif_audio=gif_audio, file_name=f"{event.title} - Summary Video.mp4")
+
+		# Upload Video & Update Database
+		event.event_video_summary_file = upload_file_to_drive(file=f"{event.title} - Summary Video.mp4", directory=bot_workspace_location, parent_id=event.drive_archive_video_folder_id, file_name="Summary Video") 
+		session.commit()
 		
 
+		# Optional Output
+		if output["new_events"]: print(f"\nEvent has been archived Successfully!")
+
 	# Non-Optional Output
-	if output: print(f"""\nEVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
+	if output: print(f"""\nALL EVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
 

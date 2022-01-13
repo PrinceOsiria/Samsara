@@ -130,6 +130,7 @@ class Event(Base):
 	event_video_file = Column(String())
 	event_audio_file = Column(String())
 	event_audio_summary_file = Column(String())
+	event_video_summary_file = Column(String())
 
 
 	# Meta Information

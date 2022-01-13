@@ -14,7 +14,7 @@ from dae.Modules.nite_functions import *
 ##################################################### Tasks $##############################################################################
 ###########################################################################################################################################
 # Task Practice
-@tasks.loop(seconds=1800)
+@tasks.loop(minutes=5)
 async def samsara():
 
 	# Non-Optional Output
@@ -22,6 +22,9 @@ async def samsara():
 ###########################################################################################################################################
 Codename Samsara is: ONLINE
 """)
+
+	# Debug Halt
+	if debug_halt == True: print("Please Press Enter to Begin"); input()
 
 	# Initialization and Validation - N.I.T.E.
 	initiate_automated_cleanup()
