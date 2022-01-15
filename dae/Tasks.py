@@ -26,11 +26,11 @@ Codename Samsara is: ONLINE
 	# Debug Halt
 	if debug_halt: print("Please Press Enter to Begin"); input()
 
+	# Initialization and Validation - N.I.T.E.
+	initiate_automated_cleanup()
+
 	# Debug Skip
 	if not debug_skip:
-
-		# Initialization and Validation - N.I.T.E.
-		initiate_automated_cleanup()
 		scan_drive()
 		validate_cloud_integrity()
 
@@ -39,6 +39,7 @@ Codename Samsara is: ONLINE
 		
 		# N.I.T.E.
 		archive_events(identify_new_events())
+		generate_timeline_videos(identify_new_videos()) # Unindented to debug
 		
 
 

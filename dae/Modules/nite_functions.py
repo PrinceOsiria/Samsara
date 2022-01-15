@@ -1423,3 +1423,281 @@ def archive_events(new_events):
 	# Non-Optional Output
 	if output: print(f"""\nALL EVENTS ARCHIVED SUCCESSFULLY\n#####################################################\n""")
 
+
+# Generate Timeline Videos
+def generate_timeline_videos(new_videos):
+
+	# Non-Optional Output
+	if output: print(f"""\n#####################################################\nGENERATING NEW VIDEOS\n""")
+	
+	# Optional Output
+	if output["generate_new_videos"]: print(f"Determining if Current Month has any Existing Day Videos")
+
+	# Delete Current Month's Day's Video if needed
+	for day in new_videos["current_month"].days:
+		if day.video_folder_id:
+			delete_drive_folder(id = day.video_folder_id)
+			day.video_folder_id = None
+			day.video_file = None
+			session.commit()
+
+		# Optional Output
+		if output["generate_new_videos_more"]: print(f"Video Folder Found and Deleted Deleted")
+
+	# Optional Output
+	if output["generate_new_videos"]: print(f"Determining if Current Month has an Existing Video")
+
+	# Delete Current Months's Video if needed
+	current_month_video_folder = new_videos["current_month_video_folder"]
+	if current_month_video_folder:
+		delete_drive_folder(id=current_month_video_folder)
+		new_videos['current_month'].video_folder_id = None
+		new_videos['current_month'].video_file_id = None
+		session.commit()
+
+		# Optional Output
+		if output["generate_new_videos_more"]: print(f"Video Folder Found and Deleted Deleted")
+
+
+	# Optional Output
+	if output["generate_new_videos"]: print(f"Determining if Current Year has an Existing Video")
+
+	# Delete Current Year's Video if needed
+	current_year_video_folder = new_videos["current_year_video_folder"]
+	if current_year_video_folder:
+		delete_drive_folder(id=current_year_video_folder)
+		new_videos['current_year'].video_folder_id = None
+		new_videos['current_year'].video_file_id = None
+		session.commit()
+
+		# Optional Output
+		if output["generate_new_videos_more"]: print(f"Video Folder Found and Deleted Deleted")
+
+
+	# Download Day Videos
+	for day in new_videos["new_days"]:
+		for event in day.events:
+
+			# Optional Output
+			if output["generate_new_videos_more"]: print(day, event.title, event.event_video_summary_file)
+
+			download_drive_file(id=event.event_video_summary_file, file_name=f"{event.title}.mp4", directory=bot_workspace_location)
+
+	# Build Day Videos
+	for day in new_videos["new_days"]:
+
+		current_day = str(day.day)
+		events = day.events
+		tmp = []
+		for event in events:
+
+			event_year = str(event.year.year)
+			event_month = str(event.month.month)
+			event_day = str(event.day.day)
+
+			# Optional Output
+			if output["generate_new_videos"]: print(f"{event.title} happened on {event_year}/{event_month}/{event_day}")
+
+			tmp.append(event.title+".mp4")
+
+		# Optional Output
+		if output["generate_new_videos"]: print(tmp, "\n")
+
+		day_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}-{event_month}-{event_day}.mp4")
+		day.video_folder_id = create_drive_folder(id=day.drive_folder_id, title="Archive")
+		day.video_id = upload_file_to_drive(file=day_video, directory=bot_workspace_location, parent_id=day.video_folder_id, file_name="Summary of the Day")
+
+		session.commit()
+
+
+	# Build Month Videos
+	for month in new_videos["new_months"]:
+
+		current_month = str(month.month)
+		days = month.days
+		tmp = []
+		for day in days:
+
+			current_year = str(day.year.year)
+			current_month = str(day.month.month)
+			current_day = str(day.day)
+
+			# Optional Output
+			if output["generate_new_videos"]: print(f"{current_day} has events in {current_year}/{current_month}")
+
+			tmp.append(f"{current_year}-{current_month}-{current_day}.mp4")
+
+		# Optional Output
+		if output["generate_new_videos"]: print(tmp, "\n")
+
+		month_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}-{event_month}.mp4")
+		month.video_folder_id = create_drive_folder(id=month.drive_folder_id, title="Archive")
+		month.video_id = upload_file_to_drive(file=month_video, directory=bot_workspace_location, parent_id=month.video_folder_id, file_name="Summary of the Month")
+
+		session.commit()
+
+
+
+	# Build Year Videos
+	for year in new_videos["new_years"]:
+
+		months = year.months
+		tmp = []
+		for month in months:
+
+			current_year = str(month.year.year)
+			current_month = str(month.month)
+
+			# Optional Output
+			if output["generate_new_videos"]: print(f"{current_month} has events in {current_year}")
+
+			download_drive_file(id=month.video_id, file_name=f"{current_year}-{current_month}.mp4", directory=bot_workspace_location)
+			tmp.append(f"{current_year}-{current_month}.mp4")
+
+		# Optional Output
+		if output["generate_new_videos"]: print(tmp, "\n")
+
+		year_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}.mp4")		
+		year.video_folder_id = create_drive_folder(id=year.drive_folder_id, title="Archive")
+		year.video_id = upload_file_to_drive(file=year_video, directory=bot_workspace_location, parent_id=year.video_folder_id, file_name="Summary of the Year")
+
+		session.commit()
+
+
+
+	# Non-Optional Output
+	if output: print(f"""\nNEW VIDEOS GENERATED\n#####################################################\n""")
+
+
+# Identify which videos should be generated
+def identify_new_videos():
+
+	# Non-Optional Output
+	if output: print(f"""\n#####################################################\nIDENTIFYING NEW VIDEOS\n""")
+
+
+	# Optional Output
+	if output["identify_new_videos"]: print(f"Determining Current Events")
+	
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Gathering All Years")
+
+
+	# Get Years
+	years =[]
+	for year in session.query(Year).all():
+		years.append(year)
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Determining Current Year")
+
+
+	# Get Current Year
+	current_year = year
+	for year in years:
+		if int(year.year) > int(current_year.year):
+			current_year = year
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Gathering All Months")
+
+
+	# Get Months
+	months = []
+	current_months = session.query(Year).filter_by(year=current_year.year).first().months
+	for month in current_months:
+		months.append(str(month.month))
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Determining Current Month")
+
+
+	# Get Current Month
+	current_month = month
+	for month in current_months:
+		if int(month.month) > int(current_month.month):
+			current_month = month
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Initializing Current Month")
+
+
+	# Get Current Month Video & Folder
+	current_month_video = current_month.video_id
+	current_month_video_folder = current_month.video_folder_id
+
+	# Get Current Year Video & Folder
+	current_year_video = current_year.video_id
+	current_year_video_folder = current_year.video_folder_id
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"Current Month Initialized")
+
+
+	# Optional Output
+	if output["identify_new_videos"]: print(f"Current Month: {current_month}\nCurrent Month Video Folder: {current_month_video_folder}\nCurrent Month Video File: {current_month_video}")
+	
+
+
+	##### WORKSPACE
+
+	# Optional Output
+	if output["identify_new_videos"]: print(f"Determining New Videos")
+	
+	# Determine New Days
+	new_days = []
+
+	for day in current_month.days:
+		if day.video_id:
+			new_days.append(day)
+
+	for day in session.query(Day).filter_by(video_id=None):
+		new_days.append(day)
+
+	# Determine New Months
+	new_months = []
+	if current_month.video_id: new_months.append(current_month)
+	for month in session.query(Month).filter_by(video_id=None):
+		new_months.append(month)
+
+	# Determine New Years
+	new_years = []
+	if current_year.video_id: new_years.append(current_year)
+	for year in session.query(Year).filter_by(video_id=None):
+		new_years.append(year)
+
+	# Optional Output
+	if output["identify_new_videos"]: print(f"New Videos Found, Returning Results")
+
+
+
+	# Format Data for Export
+	new_videos = {
+		'current_month' : current_month,
+		'current_month_video' : current_month_video,
+		'current_month_video_folder' : current_month_video_folder,
+		'current_year' : current_year,
+		'current_year_video' : current_year_video,
+		'current_year_video_folder' : current_year_video_folder,
+		'new_days' : new_days,
+		'new_months' : new_months,
+		'new_years' : new_years
+	}
+
+
+	# Optional Output
+	if output["identify_new_videos_more"]: print(f"New Videos:\n{new_videos}")
+
+
+	# Return 
+	return new_videos
+
+
+	# Non-Optional Output
+	if output: print(f"""\nNEW VIDEOS IDENTIFIED\n#####################################################\n""")

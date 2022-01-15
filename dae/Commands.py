@@ -134,6 +134,7 @@ async def index(ctx, timeframe="0000", event_title=None):
 					# day
 					else:
 						requested_id = day_exists.document_id
+						requested_video_id = month_exists.video_id
 						found_data = session.query(Event).filter_by(day=day_exists).all()
 						data_type = "event"
 
@@ -146,6 +147,7 @@ async def index(ctx, timeframe="0000", event_title=None):
 				# Month
 				else:
 					requested_id = month_exists.document_id
+					requested_video_id = month_exists.video_id
 					found_data = session.query(Day).filter_by(month=month_exists).all()
 					data_type = "day"
 
@@ -158,6 +160,7 @@ async def index(ctx, timeframe="0000", event_title=None):
 			# Year
 			else:
 				requested_id = year_exists.document_id
+				requested_video_id = year_exists.video_id
 				found_data = session.query(Month).filter_by(year=year_exists).all()
 				data_type = "month"
 
@@ -216,6 +219,9 @@ async def index(ctx, timeframe="0000", event_title=None):
 
 				\nTimeline Document
 				https://docs.google.com/document/d/{requested_id}
+
+				\n Timeline Video
+				https://drive.google.com/file/d/{requested_video_id}/view?usp=sharing
 			""")
 
 

@@ -32,7 +32,7 @@ docs = service.documents()
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
 # Download Drive Files from Directory
-def download_drive_dir_files(id=None, file_identifier="File Number"):
+def download_drive_dir_files(id=None):
 
 	# Fetch Directory Contents
   file_list = list_drive_directory(id=id)
@@ -58,6 +58,16 @@ def download_drive_dir_files(id=None, file_identifier="File Number"):
     i+=1
 
 
+# Download Drive File
+def download_drive_file(id=None, file_name=None, directory=None):
+  # Get the file
+  file = get_drive_file(id=id)
+  
+  # Non-Optional Output
+  print(f"\nDownloading {file['title']} with id {id} from drive to {directory} with file name {file_name}")
+
+  # Download the file
+  file.GetContentFile(directory + file_name)
 
 # List Drive Directory
 def list_drive_directory(id=None):
@@ -114,7 +124,10 @@ def move_drive_file(file_id=None, parent_id=None):
 
 # Get Drive File
 def get_drive_file(id=None):
-  return drive.CreateFile(id=id).Upload()
+  file = drive.CreateFile()
+  file['id'] = id
+  file.Upload()
+  return file
 
 
 # Check listing of files for a matching title
@@ -258,6 +271,7 @@ def insert_text_to_drive_document(id=None, text=None, index=1, link=None, font="
 def upload_file_to_drive(file=None, directory=None, parent_id=None, file_name=None):
   file1 = drive.CreateFile({'title': file_name})
   file1.SetContentFile(directory+file)
+  print("\nUploading file to drive...")
   file1.Upload()
   return move_drive_file(file_id=file1['id'], parent_id=parent_id)
 

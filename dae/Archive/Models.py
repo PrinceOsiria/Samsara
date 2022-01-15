@@ -58,8 +58,10 @@ class Year(Base):
 	days = relationship("Day", backref="year")
 	events = relationship("Event", backref="year")
 
-	# Document
+	# Data
 	document_id = Column(String)
+	video_folder_id = Column(String)
+	video_id = Column(String)
 
 
 
@@ -75,8 +77,10 @@ class Month(Base):
 	days = relationship("Day", backref="month")
 	events = relationship("Event", backref="month")
 
-	# Document
+	# Data
 	document_id = Column(String)
+	video_folder_id = Column(String)
+	video_id = Column(String)
 
 
 
@@ -92,8 +96,10 @@ class Day(Base):
 	day = Column(Integer)
 	events = relationship("Event", backref="day")
 
-	# Document
+	# Data
 	document_id = Column(String)
+	video_folder_id = Column(String)
+	video_id = Column(String)
 
 
 

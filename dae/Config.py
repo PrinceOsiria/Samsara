@@ -1,14 +1,12 @@
 ###########################################################################################################################################
+##################################################### Imports #############################################################################
+###########################################################################################################################################
+# Operating System Functions
+import os
+
+###########################################################################################################################################
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
-# Bot Options
-command_prefix = "!"
-debug_halt = False
-debug_skip = True
-
-# Output options
-selected_output_option = "custom"
-
 # Drive Filesystem Configuration
 root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
 years_document_id = "1TY0luNcLqjJ4npCQ_bkeo3jXfEKqKY4f58d9MPi7hs4"
@@ -16,6 +14,25 @@ years_document_id = "1TY0luNcLqjJ4npCQ_bkeo3jXfEKqKY4f58d9MPi7hs4"
 # Local Filesystem Configuration
 private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
 bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
+local_archive_folder_location="C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/"
+# Bot Options
+command_prefix = "!"
+
+# Prevent the bot from looping on an error
+debug_halt = True
+
+# Rebuild the cloud if the local filesystem is missing (results in errors if cloud is occupied)
+smart_debug_skip = True
+
+if smart_debug_skip:
+	if "archive.db" not in os.listdir(bot_workspace_location[:-4]): 
+		debug_skip = False
+	else:
+		debug_skip = True
+else:
+	debug_skip = False
+# Output options
+selected_output_option = "custom"
 
 
 # Output Configurations
@@ -32,7 +49,11 @@ output_options = dict(
 			new_events_plus = True,
 			new_events_more = False,
 			drive_scan = True,
-			cloud_integrity_check = True
+			cloud_integrity_check = True,
+			identify_new_videos = True,
+			identify_new_videos_more = True,
+			generate_new_videos = True,
+			generate_new_videos_more = True
 	),
 
 	minimal_med = dict(
@@ -46,7 +67,11 @@ output_options = dict(
 			new_events_plus = False,
 			new_events_more = False,
 			drive_scan = True,
-			cloud_integrity_check = True
+			cloud_integrity_check = True,
+			identify_new_videos = False,
+			identify_new_videos_more = False,
+			generate_new_videos = True,
+			generate_new_videos_more = False
 	),
 
 	minimal_max = dict(
@@ -60,7 +85,11 @@ output_options = dict(
 			new_events_plus = True,
 			new_events_more = False,
 			drive_scan = True,
-			cloud_integrity_check = True
+			cloud_integrity_check = True,
+			identify_new_videos = True,
+			identify_new_videos_more = False,
+			generate_new_videos = True,
+			generate_new_videos_more = True
 	),
 
 	all_false = dict(
@@ -74,7 +103,11 @@ output_options = dict(
 			new_events_plus = False,
 			new_events_more = True,
 			drive_scan = False,
-			cloud_integrity_check = False
+			cloud_integrity_check = False,
+			identify_new_videos = False,
+			identify_new_videos_more = False,
+			generate_new_videos = False,
+			generate_new_videos_more = False
 	),
 
 	all_true = dict(
@@ -88,6 +121,10 @@ output_options = dict(
 			new_events_plus = True,
 			new_events_more = True,
 			drive_scan = True,
-			cloud_integrity_check = True
+			cloud_integrity_check = True,
+			identify_new_videos = True,
+			identify_new_videos_more = True,
+			generate_new_videos = True,
+			generate_new_videos_more = True
 	)
 )

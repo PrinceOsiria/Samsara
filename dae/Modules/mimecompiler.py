@@ -24,11 +24,21 @@ def determine_length_of_audio_file(file=None):
 
 
 # Generate Gif File
-def generate_gif_file(directory=None, files=None, file_name=None, length=None, length_delay=0):
+def generate_gif_file(directory=None, files=None, file_name=None, length=None, image_size=(1000,1000), length_delay=0):
+
+	# Initialize the output filename
 	output_file_name = directory + file_name + ".gif"
-	img, *found_files = [Image.open(directory+file) for file in os.listdir(directory) if file in files]
+	
+	# Scan directory for requested files
+	img, *found_files = [Image.open(directory+file).resize(size=image_size) for file in os.listdir(directory) if file in files]
+	
+	# Modify length input (expected movipy audio length) to work with PIL
 	adjusted_length = ((length*1000) + length_delay)/len(files) 
+	
+	# Output the file
 	img.save(fp=output_file_name, format='GIF', save_all=True, duration=adjusted_length, loop=0, append_images=found_files)
+	
+	# Return the filename
 	return file_name + ".gif"
 
 
@@ -61,7 +71,7 @@ def compile_audio_files(files=None, directory=None, file_name=None, file_format=
 
 # Compile Video Files
 def compile_video_files(files=None, directory=None, file_name=None):
-	supported_filetypes = ["mp4", "avi", "flac"]
+	supported_filetypes = ["avi", "mp4"]
 	supported_files = []
 
 	# Filter and collect the desired files - NOTE: If forms are configured correctly this becomes redundant
@@ -70,11 +80,13 @@ def compile_video_files(files=None, directory=None, file_name=None):
 			filetype = file.split(".")[1]
 
 			if filetype in supported_filetypes:
-				supported_files.append(VideoFileClip(directory+file))
+				clip = VideoFileClip(directory+file)
+				supported_files.append(clip.resize( (1000,1000) ))
+			else: print(filetype)
 
 
 	# Combine the video clips
-	output = concatenate_videoclips(supported_files)
+	output = concatenate_videoclips(supported_files, method="compose")
 
 	# Export the recombined video file
 	output.write_videofile(directory+file_name)
@@ -82,42 +94,41 @@ def compile_video_files(files=None, directory=None, file_name=None):
 
 
 # Create Video
-def create_video(directory=None, video=None, gif=None, gif_audio=None, file_name=None, verbose=True):
+def create_video(directory=None, video=None, gif=None, gif_audio=None, file_name=None, verbose=False, blank_video_directory="C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/", blank_video="blank.mp4"):
 
 	# Optional Output
-	if verbose == True: print(f"Internalizing gif:\t{directory+gif}")
+	if verbose: print(f"Internalizing gif:\t{directory+gif}")
 
 	# Internalize gif
 	gif = VideoFileClip(directory + gif)
+	gif.resize( (1000,1000))
 
 	# Optional Output
-	if verbose == True: print(f"Adding Audio to Gif:\t{directory+gif_audio}")
+	if verbose: print(f"Adding Audio to Gif:\t{directory+gif_audio}")
 
 	# Play audio over gif
 	gif.audio = AudioFileClip(directory + gif_audio)
 
 	# Optional Output
-	if verbose == True: print(f"Internalizing Video:\t{directory+video}")
+	if verbose: print(f"Internalizing Video:\t{directory+video}")
 
 	# Internalize the compiled media files - Note: Audio not supported (you try getting it to work)
 	if os.path.exists(directory+video):
 		video = VideoFileClip(directory + video)
-
-		# Combine the clips
-		output = concatenate_videoclips([gif, video])
+		video.resize( (1000,1000))
 
 	else:
 		if verbose: print(f"No Video File was Found")
 
-		# Prepare the Gif for Output
-		output = gif
+		# Interferance Patch
+		video = VideoFileClip(blank_video_directory + blank_video).subclip(10, 11)
+
+
+	# Combine the Clips
+	output = concatenate_videoclips([gif, video])
 
 	# Optional Output
-	if verbose == True: print(f"Writing Video File:\t{directory+file_name}")
+	if verbose: print(f"Writing Video File:\t{directory+file_name}")
 
 	# Export the video file
 	output.write_videofile(directory+file_name)
-
-	# Optional Output
-	if verbose == True: print("Nothing is returned")
-

@@ -24,7 +24,7 @@ from dae.Modules.pydrive_wrapper import *
 from .Modules.mimecompiler import *
 
 # Bot Options
-from dae.Config import output_options, selected_output_option, command_prefix, debug_halt, debug_skip
+from dae.Config import local_archive_folder_location, output_options, selected_output_option, command_prefix, debug_halt, debug_skip
 
 ###########################################################################################################################################
 ##################################################### Configuration #######################################################################
