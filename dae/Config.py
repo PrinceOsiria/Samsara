@@ -20,12 +20,24 @@ local_archive_folder_location="C:/Users/tyler/Documents/GitHub/Samsara/dae/Archi
 command_prefix = "!"
 
 ## Debugging Options
+## MANUAL
 # Prevent the bot from looping on an error
 debug_halt = None
 # Skip portions of code
 debug_skip = None
+
+## AUTOMATIC
 # Rebuild the cloud if the local filesystem is missing (results in errors if cloud is occupied)
 smart_debug_skip = True
+# Turns debug options off
+production_mode = True
+
+
+# Reconfigure Configs
+if production_mode:
+	debug_halt = False
+	debug_skip = False
+	smart_debug_skip=False
 
 if smart_debug_skip:
 	if "archive.db" not in os.listdir(bot_workspace_location[:-4]): 
@@ -34,6 +46,8 @@ if smart_debug_skip:
 	else:
 		debug_skip = True
 		debug_halt = False
+
+
 # Output options
 selected_output_option = "custom"
 
