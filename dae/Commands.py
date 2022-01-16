@@ -244,3 +244,156 @@ async def index(ctx, timeframe="0000", event_title=None):
 
 		# Return
 		await ctx.send(embed=embed)
+
+
+# Return Current Events
+@dae.command()
+async def current_events(ctx):
+	# Get all Years
+	years = session.query(Year).all()
+
+	# Get Current Year
+	max_year = 0
+	for year in years:
+		if int(year.year) > int(max_year):
+			current_year = year
+			max_year = year.year
+
+	# Get Current Month
+	max_month = 0
+	for month in current_year.months:
+		if int(month.month) > max_month:
+			current_month = month
+			max_month = month.month
+
+	# Gather the required resources
+	requested_id = month.document_id
+	requested_video_id = month.video_id
+	days = []
+	for day in month.days:
+		days.append(day.day)
+
+	# Prepare the output
+	embed = discord.Embed()
+	embed.add_field(
+		name=f"*__Current Events__*",
+		value=f"""
+		{ctx.message.author.mention} has requested: 
+			\tYear: {year.year}
+			\tMonth: {month.month}
+
+		\n Here are the days I found:
+		{days}
+
+		\nTimeline Document
+		https://docs.google.com/document/d/{requested_id}
+
+		\n Timeline Video
+		https://drive.google.com/file/d/{requested_video_id}/view?usp=sharing
+	""")
+
+	# Return
+	await ctx.send(embed=embed)
+
+# Catch the user up
+@dae.command()
+async def catchmeup(ctx, timeframe=None):
+
+	# Prepare the Output
+	embed = discord.Embed()	
+
+	if timeframe:
+
+		# Format the Input
+		timeframe = timeframe.split("/")
+		timeframe_length = len(timeframe)
+		year, month = None, None
+		year_exists, month_exists = None, None
+		if timeframe_length > 0: year = int(timeframe[0])
+		if timeframe_length > 1: month = int(timeframe[1])
+
+		# Get Current Year
+		requested_year = session.query(Year).filter_by(year=year).first()
+		if requested_year:
+			if year == requested_year.year: 
+				year_exists = True
+				current_year = requested_year
+
+		# Get Current Month
+		if month:
+			requested_month = session.query(Month).filter_by(month=month).first()
+			if month == requested_month.month: 
+				month_exists = True
+				current_month = requested_month
+
+		# Input Validation
+		if year_exists:
+			if month_exists:
+				# Fetch remaining months of current year
+				requested_months = []
+				max_month = int(current_month.month)
+				for month in current_year.months:
+					if int(month.month) > max_month:
+						requested_months.append(month)
+
+
+			# Fetch the requested future years
+			requested_years = []
+			years = session.query(Year).all()
+			for tmp_year in years:
+				if tmp_year.year > year:
+					requested_years.append(tmp_year)
+
+
+			# Prepare the Output	
+			if month_exists:
+				embed.add_field(name=f"*__Catch Me Up__*",value=f"""{ctx.message.author.mention} has requested all new entries after (and including) {current_year.year}/{current_month.month}:""")
+				embed.add_field(name=f"*__{current_year.year}/{current_month.month}__*",value=f"""
+							\nTimeline Document
+							https://docs.google.com/document/d/{current_month.document_id}
+
+							\n Timeline Video
+							https://drive.google.com/file/d/{current_month.video_id}/view?usp=sharing
+					""")
+				
+				for month in requested_months:
+					embed.add_field(name=f"*__{month.year.year}/{month.month}__*",value=f"""
+							\nTimeline Document
+							https://docs.google.com/document/d/{month.document_id}
+
+							\n Timeline Video
+							https://drive.google.com/file/d/{month.video_id}/view?usp=sharing
+					""")
+
+			else:
+				embed.add_field(name=f"*__Catch Me Up__*",value=f"""{ctx.message.author.mention} has requested all new entries after (and including) {current_year.year}:""")
+				embed.add_field(name=f"*__{current_year.year}__*",value=f"""
+							\nTimeline Document
+							https://docs.google.com/document/d/{current_year.document_id}
+
+							\n Timeline Video
+							https://drive.google.com/file/d/{current_year.video_id}/view?usp=sharing
+					""")	
+
+
+			for year in requested_years:
+				embed.add_field(name=f"*__{year.year}__*",value=f"""
+						\nTimeline Document
+						https://docs.google.com/document/d/{year.document_id}
+
+						\n Timeline Video
+						https://drive.google.com/file/d/{year.video_id}/view?usp=sharing
+				""")
+
+			
+		else:
+			embed.add_field(name=f"*__Catch Me Up__*",value=f"""
+						I could not find that year in my database
+						Please use `!index` to explore the archives and try again with a valid timeframe
+						""")
+	else:
+		embed.add_field(name=f"*__Catch Me Up__*",value=f"""
+						Please use `!index` to explore the archives and try again with a valid timeframe
+						""")
+	# Return
+	await ctx.send(embed=embed)

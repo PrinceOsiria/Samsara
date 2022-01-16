@@ -15,22 +15,25 @@ years_document_id = "1TY0luNcLqjJ4npCQ_bkeo3jXfEKqKY4f58d9MPi7hs4"
 private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
 bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
 local_archive_folder_location="C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/"
+
 # Bot Options
 command_prefix = "!"
 
+## Debugging Options
 # Prevent the bot from looping on an error
-debug_halt = True
-
+debug_halt = None
+# Skip portions of code
+debug_skip = None
 # Rebuild the cloud if the local filesystem is missing (results in errors if cloud is occupied)
 smart_debug_skip = True
 
 if smart_debug_skip:
 	if "archive.db" not in os.listdir(bot_workspace_location[:-4]): 
 		debug_skip = False
+		debug_halt = True
 	else:
 		debug_skip = True
-else:
-	debug_skip = False
+		debug_halt = False
 # Output options
 selected_output_option = "custom"
 
