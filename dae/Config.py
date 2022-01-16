@@ -68,9 +68,9 @@ output_options = dict(
 			drive_scan = True,
 			cloud_integrity_check = True,
 			identify_new_videos = True,
-			identify_new_videos_more = True,
+			identify_new_videos_more = False,
 			generate_new_videos = True,
-			generate_new_videos_more = True
+			generate_new_videos_more = False
 	),
 
 	minimal_med = dict(

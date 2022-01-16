@@ -25,7 +25,7 @@ def determine_length_of_audio_file(verbose=True, file=None):
 
 
 # Generate Gif File
-def generate_gif_file(directory=None, directory_modifier="", files=None, file_name=None, length=None, image_size=(1000,1000), length_delay=0, verbose=True):
+def generate_gif_file(directory=None, directory_modifier="", files=None, file_name=None, length=None, image_size=(500,500), length_delay=0, verbose=True):
 
 	# Initialize the output filename
 	output_file_name = directory + directory_modifier + file_name + ".gif"
@@ -75,7 +75,7 @@ def compile_audio_files(files=None, directory=None, file_name=None, file_format=
 
 
 # Compile Video Files
-def compile_video_files(files=None, directory=None, file_name=None):
+def compile_video_files(files=None, directory=None, file_name=None, file_size=(500,500)):
 	supported_filetypes = ["avi", "mp4"]
 	supported_files = []
 
@@ -86,7 +86,7 @@ def compile_video_files(files=None, directory=None, file_name=None):
 
 			if filetype in supported_filetypes:
 				clip = VideoFileClip(directory+file)
-				supported_files.append(clip.resize( (1000,1000) ))
+				supported_files.append(clip.resize(file_size))
 			else: print(filetype)
 
 
@@ -99,14 +99,14 @@ def compile_video_files(files=None, directory=None, file_name=None):
 
 
 # Create Video
-def create_video(directory=None, audio=None, video=None, gif=None, gif_audio=None, file_name=None, verbose=True, blank_video_directory=None, blank_video=None, blank_png_directory=None, blank_png=None):
+def create_video(directory=None, audio=None, video=None, gif=None, gif_audio=None, file_name=None, verbose=True, blank_video_directory=None, blank_video=None, blank_png_directory=None, blank_png=None, file_size=(500, 500)):
 
 	# Optional Output
 	if verbose: print(f"Internalizing gif:\t{directory+gif}")
 
 	# Internalize gif
 	gif = VideoFileClip(directory + gif)
-	gif.resize( (1000,1000))
+	gif.resize( file_size)
 
 	# Optional Output
 	if verbose: print(f"Adding Audio to Gif:\t{directory+gif_audio}")
@@ -120,7 +120,7 @@ def create_video(directory=None, audio=None, video=None, gif=None, gif_audio=Non
 	# Video File
 	if os.path.exists(directory+video):
 		video = VideoFileClip(directory + video)
-		video.resize( (1000,1000))
+		video.resize( file_size)
 
 	else:
 		if verbose: print(f"{directory+video} was not Found")

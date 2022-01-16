@@ -14,4 +14,6 @@ async def on_ready():
 	if "archive.db" not in os.listdir(bot_workspace_location[:-4]):
 		print("Existing Archive Not Found, Creating One Now...")
 		refresh_database()
-	samsara.start()
+	
+	if not samsara.is_running():
+			samsara.start()

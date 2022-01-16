@@ -1502,7 +1502,7 @@ def generate_timeline_videos(new_videos):
 			tmp.append(event.title+".mp4")
 
 		# Optional Output
-		if output["generate_new_videos"]: print(tmp, "\n")
+		if output["generate_new_videos_more"]: print(tmp, "\n")
 
 		day_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}-{event_month}-{event_day}.mp4")
 		day.video_folder_id = create_drive_folder(id=day.drive_folder_id, title="Archive")
@@ -1529,7 +1529,7 @@ def generate_timeline_videos(new_videos):
 			tmp.append(f"{current_year}-{current_month}-{current_day}.mp4")
 
 		# Optional Output
-		if output["generate_new_videos"]: print(tmp, "\n")
+		if output["generate_new_videos_more"]: print(tmp, "\n")
 
 		month_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}-{event_month}.mp4")
 		month.video_folder_id = create_drive_folder(id=month.drive_folder_id, title="Archive")
@@ -1556,7 +1556,7 @@ def generate_timeline_videos(new_videos):
 			tmp.append(f"{current_year}-{current_month}.mp4")
 
 		# Optional Output
-		if output["generate_new_videos"]: print(tmp, "\n")
+		if output["generate_new_videos_more"]: print(tmp, "\n")
 
 		year_video = compile_video_files(files=tmp, directory=bot_workspace_location, file_name=f"{event_year}.mp4")		
 		year.video_folder_id = create_drive_folder(id=year.drive_folder_id, title="Archive")
