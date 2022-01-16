@@ -1408,9 +1408,10 @@ def archive_events(new_events):
 		video = f"{event.title} - Video Evidence Compilation.mp4"
 		gif = f"{event.title} - Gif of Image Evidence.gif"
 		gif_audio = f"{event.title} - Narrated Summary.mp3"
+		audio = f"{event.title} - Audio Evidence Compilation.mp3"
 
 		# Generate Video
-		create_video(directory=bot_workspace_location,video=video, gif=gif, gif_audio=gif_audio, file_name=f"{event.title} - Summary Video.mp4")
+		create_video(directory=bot_workspace_location, video=video, blank_png="blank.png", blank_video="blank.mp4", blank_video_directory=local_archive_folder_location, blank_png_directory=local_archive_folder_location,  audio=audio, gif=gif, gif_audio=gif_audio, file_name=f"{event.title} - Summary Video.mp4")
 
 		# Upload Video & Update Database
 		event.event_video_summary_file = upload_file_to_drive(file=f"{event.title} - Summary Video.mp4", directory=bot_workspace_location, parent_id=event.drive_archive_video_folder_id, file_name="Summary Video") 
