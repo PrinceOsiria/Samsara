@@ -1,9 +1,0 @@
-First, you'll need a discord bot. Then, use it's bot id in a file called 'run.py' and run the bot named 'dae' with it
-
-Second, in the config file, change all directories and settings
-
-Finally, on drive, ensure that you have the correct file tree (the drive scan will help you figure it out) and the correct permissions
-
-Permissions are done via a service account, with local credentials. These are stored in dae/Archive as private_key.json
-
-This should be all you need, if you're managing to read this (private repo?)

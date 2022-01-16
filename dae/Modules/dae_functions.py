@@ -123,31 +123,33 @@ def get_current_events():
       evidence = non_standard_data[2]
       summary = non_standard_data[3]
 
-      # Optional Output
-      if output["event_internalization"]:
-        print(f"""
-            {title} Was Scanned Correctly
+      if title:
 
-              -- META --
-                Archived on: {archived_on}
-                Archived by: {archived_by}
-              
-              -- STANDARD --
-                Date: {date}
-                Title: {title}
+	      # Optional Output
+	      if output["event_internalization"]:
+	        print(f"""
+	            {title} Was Scanned Correctly
 
-              -- NON-STANDARD --
-                Tags: {tags}
-                Evidence: {evidence}
-                Summary: {summary}
-          """)
+	              -- META --
+	                Archived on: {archived_on}
+	                Archived by: {archived_by}
+	              
+	              -- STANDARD --
+	                Date: {date}
+	                Title: {title}
 
-      # Add event to list of internalized events
-      internalized_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
+	              -- NON-STANDARD --
+	                Tags: {tags}
+	                Evidence: {evidence}
+	                Summary: {summary}
+	          """)
 
-      # Optional output
-      if output["event_internalization"]: print(f"{title} Internalized Successfully . . . ")
-    
+	      # Add event to list of internalized events
+	      internalized_events.append(Event(archived_on=archived_on, archived_by=archived_by, date=date, title=title, tags=tags, evidence=evidence, summary=summary))
+
+	      # Optional output
+	      if output["event_internalization"]: print(f"{title} Internalized Successfully . . . ")
+	    
 
     elif output["event_internalization"]: print(f"Incorrect Formatting: {event}")
 

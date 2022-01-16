@@ -1306,11 +1306,11 @@ def archive_events(new_events):
 			
 			'objectSize': {
 				'height': {
-					'magnitude': 500,
+					'magnitude': 250,
 					'unit': 'PT'
 				},
 				'width': {
-					'magnitude': 500,
+					'magnitude': 250,
 					'unit': 'PT'
 				}
 			}}},
