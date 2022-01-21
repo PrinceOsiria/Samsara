@@ -30,7 +30,7 @@ Codename Samsara is: ONLINE
 	# Automated Cleanup - N.I.T.E.
 	initiate_automated_cleanup()
 
-	# Debug Skip
+	# Debug Skip - unindent the part you wish to resume from
 	if not debug_skip:
 		# Initialization and Validation - N.I.T.E.
 		if not production_mode:
@@ -42,8 +42,10 @@ Codename Samsara is: ONLINE
 		
 		# N.I.T.E.
 		archive_events(identify_new_events())
-		generate_timeline_videos(identify_new_videos()) # Unindented to debug
+		generate_timeline_videos(identify_new_videos()) 
 
+		# Automated Cleanup - N.I.T.E.
+		initiate_automated_cleanup()
 
 	# Non-Optional Output
 	if output: print(f"""
