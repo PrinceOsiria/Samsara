@@ -397,3 +397,70 @@ async def catchmeup(ctx, timeframe=None):
 						""")
 	# Return
 	await ctx.send(embed=embed)
+
+
+# Filter events by tag
+@dae.command()
+async def filter(ctx, tags=None):
+
+	# Allows for use without tags
+	if not tags:
+		requested_events = None
+
+		# Collect all known tags
+		tags = []
+		for event in session.query(Event).all():
+			for tag in event.tags.replace(" ", "").split(","):
+				if tag not in tags:
+					tags.append(tag)
+
+	else:
+
+
+		tags = tags.split(",")
+		events = session.query(Event).all()
+
+		requested_events = []
+		for event in events:
+
+			# Initialize the filter (return only if all tags are found)
+			number_of_tags = len(tags)
+			number_of_matches = 0
+
+			# Scan the event for matched tags
+			for tag in tags:
+				if tag in event.tags:
+					number_of_matches += 1
+
+			# Output the event if it contains the requested tags
+			if number_of_matches == number_of_tags:
+				requested_events.append(event)
+
+
+	# Prepare Output
+	embed = discord.Embed()
+	if requested_events:
+		for event in requested_events:
+			embed.add_field(name=f"__{event.title}__", value=f"""
+			\nTags: {event.tags}
+
+
+			\nTimeline Document
+			https://docs.google.com/document/d/{event.event_summary_file}
+
+			\n Timeline Video
+			https://drive.google.com/file/d/{event.event_video_summary_file}/view?usp=sharing
+
+				""")
+	else:
+		embed.add_field(name=f"__Filter__", value=f"""
+			\n To use filter, you must supply tags! Here are the tags I found:
+
+
+			\n{tags}
+				""")
+			
+			
+
+	# Return
+	await ctx.send(embed=embed)

@@ -1437,13 +1437,14 @@ def generate_timeline_videos(new_videos):
 	# Delete Current Month's Day's Video if needed
 	for day in new_videos["current_month"].days:
 		if day.video_folder_id:
+			if output["generate_new_videos"]: print(f"Deleting a folder: {day.video_folder_id}")
 			delete_drive_folder(id = day.video_folder_id)
 			day.video_folder_id = None
 			day.video_file = None
 			session.commit()
 
-		# Optional Output
-		if output["generate_new_videos_more"]: print(f"Video Folder Found and Deleted Deleted")
+			# Optional Output
+			if output["generate_new_videos_more"]: print(f"Video Folder Found and Deleted Deleted")
 
 	# Optional Output
 	if output["generate_new_videos"]: print(f"Determining if Current Month has an Existing Video")
@@ -1451,6 +1452,7 @@ def generate_timeline_videos(new_videos):
 	# Delete Current Months's Video if needed
 	current_month_video_folder = new_videos["current_month_video_folder"]
 	if current_month_video_folder:
+		if output["generate_new_videos"]: print(f"Deleting a folder: {current_month_video_folder}")
 		delete_drive_folder(id=current_month_video_folder)
 		new_videos['current_month'].video_folder_id = None
 		new_videos['current_month'].video_file_id = None

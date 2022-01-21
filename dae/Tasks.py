@@ -33,8 +33,9 @@ Codename Samsara is: ONLINE
 	# Debug Skip
 	if not debug_skip:
 		# Initialization and Validation - N.I.T.E.
-		scan_drive()
-		validate_cloud_integrity()
+		if not production_mode:
+			scan_drive()
+			validate_cloud_integrity()
 
 		# D.A.E.
 		update_database(get_current_events())
@@ -42,10 +43,7 @@ Codename Samsara is: ONLINE
 		# N.I.T.E.
 		archive_events(identify_new_events())
 		generate_timeline_videos(identify_new_videos()) # Unindented to debug
-		
 
-		# Automated Cleanup - N.I.T.E.
-		initiate_automated_cleanup()
 
 	# Non-Optional Output
 	if output: print(f"""
