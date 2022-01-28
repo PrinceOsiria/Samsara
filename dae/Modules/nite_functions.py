@@ -477,6 +477,7 @@ def identify_new_events():
 	if output: print(f"""\nEVENTS IDENTIFIED SUCCESSFULLY\n#####################################################\n""")
 
 	# Return New Events
+	if len(new_events) < 1: new_events = None
 	return new_events
 
 

@@ -41,11 +41,11 @@ Codename Samsara is: ONLINE
 		update_database(get_current_events())
 		
 		# N.I.T.E.
-		archive_events(identify_new_events())
-		generate_timeline_videos(identify_new_videos()) 
-
-		# Automated Cleanup - N.I.T.E.
-		initiate_automated_cleanup()
+		new_events = identify_new_events()
+		if new_events:
+			archive_events(new_events)
+			generate_timeline_videos(identify_new_videos())
+			initiate_automated_cleanup()
 
 	# Non-Optional Output
 	if output: print(f"""
