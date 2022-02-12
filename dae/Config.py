@@ -30,7 +30,7 @@ debug_skip = None
 # Rebuild the cloud if the local filesystem is missing (results in errors if cloud is occupied)
 smart_debug_skip = False
 # Turns debug options off
-production_mode = True
+production_mode = False
 
 
 # Reconfigure Configs

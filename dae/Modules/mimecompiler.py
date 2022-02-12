@@ -25,14 +25,21 @@ def determine_length_of_audio_file(verbose=True, file=None):
 
 
 # Generate Gif File
-def generate_gif_file(directory=None, directory_modifier="", files=None, file_name=None, length=None, image_size=(500,500), length_delay=0, verbose=True):
+def generate_gif_file(directory=None, directory_modifier="", files=None, file_name=None, length=None, image_size=(500,500), length_delay=500, verbose=True):
 
 	# Initialize the output filename
 	output_file_name = directory + directory_modifier + file_name + ".gif"
 	if verbose: print(f"Output file name: {output_file_name}\nOutput file Directory: {directory}")
 
+	# Optional Output
+	if verbose: print(f"Seeking these files: {files}")
+
 	# Scan directory for requested files
-	img, *found_files = [Image.open(directory+file).resize(size=image_size) for file in os.listdir(directory) if file in files]
+	found_files = []
+	for file in os.listdir(directory):
+		if file in files:
+			found_files.append(Image.open(directory+file).resize(size=image_size))
+	img = found_files[0]
 	if verbose: print(f"Found Files:{found_files}")
 
 	# Modify length input (expected movipy audio length) to work with PIL

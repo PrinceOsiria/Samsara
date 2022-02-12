@@ -18,12 +18,3 @@ async def on_ready():
 	if not samsara.is_running():
 			samsara.start()
 
-
-@commands.Cog.listener()
-async def on_member_join(self, member: discord.Member):
-    channel = self.bot.get_channel(547614364937748502)
-
-    if not channel:
-        return
-
-    await channel.send(f"Welcome, {member}!")

@@ -4,7 +4,7 @@
 # Core Discord Imports
 from dae import *
 from dae.Config import root_folder_id, years_document_id, bot_workspace_location
-
+import time
 ###########################################################################################################################################
 ##################################################### Functions ###########################################################################
 ###########################################################################################################################################
@@ -624,6 +624,9 @@ def archive_events(new_events):
 			# Scan Month Folder
 			day_files = query_drive(f"'{month.drive_folder_id}' in parents")
 
+			# Optional Output
+			if output["new_events_more"]: print(f" day_files: {day_files}")
+
 			# Scan Month Folder for Matching Title
 			day_exists_on_drive = check_files_for_title(files=day_files, title=day)
 			if day_exists_on_drive:
@@ -891,6 +894,7 @@ def archive_events(new_events):
 
 			# Upload Gif File
 			gif_file_id = upload_file_to_drive(file=gif_file, directory=bot_workspace_location, parent_id=event.drive_archive_image_folder_id, file_name="Gif of Image Evidence.gif")
+			time.sleep(1)
 
 			# Optional Output
 			if output["new_events"]: print(f"Updating Database...")
@@ -993,7 +997,7 @@ def archive_events(new_events):
 				if output["new_events"]: print(f"\nYears File Could not be Verified - Generating a new one - NOTE: MANUAL REPAIRS NEEDED\n")
 
 				delete_drive_folder(id=years_file_exists["id"])
-				drive.years_file_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Years")["id"], copy_title="Years", parent_id=drive.archive_folder_id)
+				drive.years_file_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Years")["id"],copy_title="Years" , parent_id=drive.archive_folder_id)
 
 				# Optional Output
 				if output["new_events"]: print(f"\nYears File Generated\n")
@@ -1015,7 +1019,7 @@ def archive_events(new_events):
 
 		# Check for Year Document
 		year_files = list_drive_directory(id=event.year_id)
-		year_file_exists = check_files_for_title(files=year_files, title=str(event.year.year))
+		year_file_exists = check_files_for_title(files=year_files, title=str(event.year.year) + " - Year Document")
 
 
 		if year_file_exists:
@@ -1037,7 +1041,7 @@ def archive_events(new_events):
 				delete_drive_folder(id=year_file_exists["id"])
 
 				# Create a New File
-				event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=event.year.year, parent_id=event.year.drive_folder_id)
+				event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=str(event.year.year) + " - Year Document", parent_id=event.year.drive_folder_id)
 				session.commit()
 
 				# Update Years Document
@@ -1051,7 +1055,7 @@ def archive_events(new_events):
 			if output["new_events"]: print(f"Year File is Being Generated")
 
 			# Create a New File
-			event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=event.year.year, parent_id=event.year.drive_folder_id)
+			event.year.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Year")["id"], copy_title=str(event.year.year) + " - Year Document", parent_id=event.year.drive_folder_id)
 			session.commit()
 
 			# Update Years Document
@@ -1059,7 +1063,7 @@ def archive_events(new_events):
 
 		# Check for Month Document
 		month_files = list_drive_directory(id=event.month_id)
-		month_file_exists = check_files_for_title(files=month_files, title=str(event.month.month))
+		month_file_exists = check_files_for_title(files=month_files, title=str(event.month.month) + " - Month Document")
 
 
 		if month_file_exists:
@@ -1081,7 +1085,7 @@ def archive_events(new_events):
 				delete_drive_folder(id=month_file_exists["id"])
 
 				# Create a New File
-				event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=event.month.month, parent_id=event.month.drive_folder_id)
+				event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=str(event.month.month) + " - Month Document", parent_id=event.month.drive_folder_id)
 				session.commit()
 
 				# Update Years Document
@@ -1095,7 +1099,7 @@ def archive_events(new_events):
 			if output["new_events"]: print(f"Month File is Being Generated")
 
 			# Create a New File
-			event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=event.month.month, parent_id=event.month.drive_folder_id)
+			event.month.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Month")["id"], copy_title=str(event.month.month) + " - Month Document", parent_id=event.month.drive_folder_id)
 			session.commit()
 
 			# Update Years Document
@@ -1104,7 +1108,7 @@ def archive_events(new_events):
 
 		# Check for Day Document
 		day_files = list_drive_directory(id=event.day_id)
-		day_file_exists = check_files_for_title(files=day_files, title=str(event.day.day))
+		day_file_exists = check_files_for_title(files=day_files, title=str(event.day.day) + " - Day Document")
 
 
 		if day_file_exists:
@@ -1126,7 +1130,7 @@ def archive_events(new_events):
 				delete_drive_folder(id=day_file_exists["id"])
 
 				# Create a New File
-				event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=event.day.day, parent_id=event.day.drive_folder_id)
+				event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=str(event.day.day) + " - Day Document", parent_id=event.day.drive_folder_id)
 				session.commit()
 
 				# Update Years Document
@@ -1140,7 +1144,7 @@ def archive_events(new_events):
 			if output["new_events"]: print(f"Day File is Being Generated")
 
 			# Create a New File
-			event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=event.day.day, parent_id=event.day.drive_folder_id)
+			event.day.document_id = copy_drive_file_to_folder(file_id=check_files_for_title(files=template_files, title="Day")["id"], copy_title=str(event.day.day) + " - Day Document", parent_id=event.day.drive_folder_id)
 			session.commit()
 
 			# Update Years Document

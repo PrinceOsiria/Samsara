@@ -37,7 +37,7 @@ async def encode(ctx, clearText=None, alphaKey=None, keys=None):
 	if (clearText and alphaKey and keys):
 		# Variable Initialization
 		alphabet = p108.create_alphabet(alphaKey)
-		clearText = p108.clean_text(clearText, alphabet)
+		clearText = p108.clean_text(clearText.lower(), alphabet)
 		encodeKeys = p108.clean_text(keys.replace(" ", "~"), alphabet).replace("~", " ")
 
 		# Encryption	
@@ -69,7 +69,7 @@ async def decode(ctx, cipherText=None, alphaKey=None, keys=None):
 	if (cipherText and alphaKey and keys):
 		# Variable Initialization
 		alphabet = p108.create_alphabet(alphaKey)
-		cipherText = p108.clean_text(cipherText, alphabet)
+		cipherText = p108.clean_text(cipherText.lower(), alphabet)
 		decodeKeys = p108.clean_text("~".join(reversed(keys.split())), alphabet).replace("~", " ")
 
 		# Decryption	
