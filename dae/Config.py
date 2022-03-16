@@ -8,13 +8,13 @@ import os
 ##################################################### Configuration #######################################################################
 ###########################################################################################################################################
 # Drive Filesystem Configuration
-root_folder_id = "1QeQJ7diP9_IpOXZ-h_8Xt66psvWyKfBv"
-years_document_id = "1TY0luNcLqjJ4npCQ_bkeo3jXfEKqKY4f58d9MPi7hs4"
+root_folder_id = ""
+years_document_id = ""
 
 # Local Filesystem Configuration
-private_key_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive" + "/" + "private_key.json"
-bot_workspace_location = "C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/tmp/"
-local_archive_folder_location="C:/Users/tyler/Documents/GitHub/Samsara/dae/Archive/"
+private_key_location = ""
+bot_workspace_location = ""
+local_archive_folder_location=""
 
 # Bot Options
 command_prefix = "!"
