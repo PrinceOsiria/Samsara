@@ -28,6 +28,8 @@ if not (discord_bot_token and root_folder_id and years_document_id and private_k
         print("\nPlease Provide your discord bot token:\t")
         discord_bot_token=input()
         
+# Auto-Drive Setup
+    ##### WORKSPACE
 
 ###########################################################################################################################################
 ##################################################### Main ################################################################################
