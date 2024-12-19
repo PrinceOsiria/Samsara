@@ -17,6 +17,7 @@ bot_workspace_location = ""
 local_archive_folder_location=""
 
 # Bot Options
+discord_bot_id = ""
 command_prefix = "!"
 
 ## Debugging Options
